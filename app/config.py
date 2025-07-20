@@ -37,9 +37,6 @@ DEFAULT_SHOP_REFERRER_LEVEL_TWO_RATE = 5
 DEFAULT_SHOP_BONUS_DEVICES_COUNT = 1
 DEFAULT_SHOP_PAYMENT_STARS_ENABLED = True
 DEFAULT_SHOP_PAYMENT_CRYPTOMUS_ENABLED = False
-DEFAULT_SHOP_PAYMENT_HELEKET_ENABLED = False
-DEFAULT_SHOP_PAYMENT_YOOKASSA_ENABLED = False
-DEFAULT_SHOP_PAYMENT_YOOMONEY_ENABLED = False
 DEFAULT_DB_NAME = "bot_database"
 
 DEFAULT_REDIS_DB_NAME = "0"
@@ -87,9 +84,6 @@ class ShopConfig:
     BONUS_DEVICES_COUNT: int
     PAYMENT_STARS_ENABLED: bool
     PAYMENT_CRYPTOMUS_ENABLED: bool
-    PAYMENT_HELEKET_ENABLED: bool
-    PAYMENT_YOOKASSA_ENABLED: bool
-    PAYMENT_YOOMONEY_ENABLED: bool
 
 
 @dataclass
@@ -105,22 +99,6 @@ class XUIConfig:
 class CryptomusConfig:
     API_KEY: str | None
     MERCHANT_ID: str | None
-
-@dataclass
-class HeleketConfig:
-    API_KEY: str | None
-    MERCHANT_ID: str | None
-
-@dataclass
-class YooKassaConfig:
-    TOKEN: str | None
-    SHOP_ID: int | None
-
-
-@dataclass
-class YooMoneyConfig:
-    NOTIFICATION_SECRET: str | None
-    WALLET_ID: str | None
 
 
 @dataclass
@@ -164,9 +142,6 @@ class Config:
     shop: ShopConfig
     xui: XUIConfig
     cryptomus: CryptomusConfig
-    heleket: HeleketConfig
-    yookassa: YooKassaConfig
-    yoomoney: YooMoneyConfig
     database: DatabaseConfig
     redis: RedisConfig
     logging: LoggingConfig
@@ -202,51 +177,9 @@ def load_config() -> Config:
             )
             payment_cryptomus_enabled = False
 
-    payment_heleket_enabled = env.bool(
-        "SHOP_PAYMENT_HELEKET_ENABLED",
-        default=DEFAULT_SHOP_PAYMENT_HELEKET_ENABLED,
-    )
-    if payment_heleket_enabled:
-        heleket_api_key = env.str("HELEKET_API_KEY", default=None)
-        heleket_merchant_id = env.str("HELEKET_MERCHANT_ID", default=None)
-        if not heleket_api_key or not heleket_merchant_id:
-            logger.error(
-                "HELEKET_API_KEY or HELEKET_MERCHANT_ID is not set. Payment Heleket is disabled."
-            )
-            payment_heleket_enabled = False
-
-    payment_yookassa_enabled = env.bool(
-        "SHOP_PAYMENT_YOOKASSA_ENABLED",
-        default=DEFAULT_SHOP_PAYMENT_YOOKASSA_ENABLED,
-    )
-    if payment_yookassa_enabled:
-        yookassa_token = env.str("YOOKASSA_TOKEN", default=None)
-        yookassa_shop_id = env.int("YOOKASSA_SHOP_ID", default=None)
-        if not yookassa_token or not yookassa_shop_id:
-            logger.error(
-                "YOOKASSA_TOKEN or YOOKASSA_SHOP_ID is not set. Payment YooKassa is disabled."
-            )
-            payment_yookassa_enabled = False
-
-    payment_yoomoney_enabled = env.bool(
-        "SHOP_PAYMENT_YOOMONEY_ENABLED",
-        default=DEFAULT_SHOP_PAYMENT_YOOMONEY_ENABLED,
-    )
-    if payment_yoomoney_enabled:
-        yoomoney_notification_secret = env.str("YOOMONEY_NOTIFICATION_SECRET", default=None)
-        yoomoney_wallet_id = env.str("YOOMONEY_WALLET_ID", default=None)
-        if not yoomoney_notification_secret or not yoomoney_wallet_id:
-            logger.error(
-                "YOOMONEY_NOTIFICATION_SECRET or YOOMONEY_WALLET_ID is not set. Payment YooMoney is disabled."
-            )
-            payment_yoomoney_enabled = False
-
     if (
         not payment_stars_enabled
         and not payment_cryptomus_enabled
-        and not payment_heleket_enabled
-        and not payment_yookassa_enabled
-        and not payment_yoomoney_enabled
     ):
         logger.warning("No payment methods are enabled. Enabling Stars payment method.")
         payment_stars_enabled = True
@@ -333,9 +266,6 @@ def load_config() -> Config:
             ),
             PAYMENT_STARS_ENABLED=payment_stars_enabled,
             PAYMENT_CRYPTOMUS_ENABLED=payment_cryptomus_enabled,
-            PAYMENT_HELEKET_ENABLED=payment_heleket_enabled,
-            PAYMENT_YOOKASSA_ENABLED=payment_yookassa_enabled,
-            PAYMENT_YOOMONEY_ENABLED=payment_yoomoney_enabled,
         ),
         xui=XUIConfig(
             USERNAME=env.str("XUI_USERNAME"),
@@ -350,18 +280,6 @@ def load_config() -> Config:
         cryptomus=CryptomusConfig(
             API_KEY=env.str("CRYPTOMUS_API_KEY", default=None),
             MERCHANT_ID=env.str("CRYPTOMUS_MERCHANT_ID", default=None),
-        ),
-        heleket=HeleketConfig(
-            API_KEY=env.str("HELEKET_API_KEY", default=None),
-            MERCHANT_ID=env.str("HELEKET_MERCHANT_ID", default=None),
-        ),
-        yookassa=YooKassaConfig(
-            TOKEN=env.str("YOOKASSA_TOKEN", default=None),
-            SHOP_ID=env.int("YOOKASSA_SHOP_ID", default=None),
-        ),
-        yoomoney=YooMoneyConfig(
-            NOTIFICATION_SECRET=env.str("YOOMONEY_NOTIFICATION_SECRET", default=None),
-            WALLET_ID=env.str("YOOMONEY_WALLET_ID", default=None),
         ),
         database=DatabaseConfig(
             HOST=env.str("DB_HOST", default=None),

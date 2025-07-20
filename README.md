@@ -33,7 +33,7 @@
 
 **3X-UI-SHOP** is a comprehensive solution designed to automate the sale of VPN subscriptions through Telegram.
 The bot uses the **3X-UI** panel API for client management and supports multiple payment methods, including
-**Cryptomus**, **Heleket**, **YooKassa**, **YooMoney**, and **Telegram Stars**.
+**Cryptomus** and **Telegram Stars**.
 
 The bot enables efficient subscription sales with advanced features:
 
@@ -158,9 +158,6 @@ Before starting the installation, make sure you have the installed [**Docker**](
 | SHOP_BONUS_DEVICES_COUNT | ⭕ | 1 | Default Device Limit for Promocode, Trial, and Referral Users (Based on Plan Settings) |
 | SHOP_PAYMENT_STARS_ENABLED | ⭕ | True | Enable Telegram stars payment |
 | SHOP_PAYMENT_CRYPTOMUS_ENABLED | ⭕ | False | Enable Cryptomus payment |
-| SHOP_PAYMENT_HELEKET_ENABLED | ⭕ | False | Enable Heleket payment |
-| SHOP_PAYMENT_YOOKASSA_ENABLED | ⭕ | False | Enable Yookassa payment |
-| SHOP_PAYMENT_YOOMONEY_ENABLED | ⭕ | False | Enable Yoomoney payment |
 | | | |
 | XUI_USERNAME | 🔴 | - | Username for authentication in the 3X-UI panel |
 | XUI_PASSWORD | 🔴 | - | Password for authentication in the 3X-UI panel |
@@ -170,15 +167,6 @@ Before starting the installation, make sure you have the installed [**Docker**](
 | | | |
 | CRYPTOMUS_API_KEY | ⭕ | - | API key for Cryptomus payment |
 | CRYPTOMUS_MERCHANT_ID | ⭕ | - | Merchant ID for Cryptomus payment |
-| | | |
-| HELEKET_API_KEY | ⭕ | - | API key for Heleket payment |
-| HELEKET_MERCHANT_ID | ⭕ | - | Merchant ID for Heleket payment |
-| | | |
-| YOOKASSA_TOKEN | ⭕ | - | Token for YooKassa payment |
-| YOOKASSA_SHOP_ID | ⭕ | - | Shop ID for YooKassa payment |
-| | | |
-| YOOMONEY_WALLET_ID | ⭕ | - | Wallet ID for Yoomoney payment |
-| YOOMONEY_NOTIFICATION_SECRET | ⭕ | - | Notification secret key for Yoomoney payment |
 | | | |
 | LOG_LEVEL | ⭕ | DEBUG | Log level (e.g., INFO, DEBUG) |
 | LOG_FORMAT | ⭕ | %(asctime)s \| %(name)s \| %(levelname)s \| %(message)s | Log format |
@@ -219,8 +207,23 @@ Before starting the installation, make sure you have the installed [**Docker**](
         {
             // Next plan
         }
-    ]
+        ]
 }
+```
+
+### 3X-UI Configuration
+
+To ensure the bot functions correctly, you must configure the 3X-UI panel:
+
+- [Set up SSL certificate.](https://github.com/MHSanaei/3x-ui?tab=readme-ov-file#ssl-certificate)
+- Set up an Inbound **(the first one will be used)** for adding clients.
+- Enable the subscription service with port `2096` and path `/user/`.
+    > **Don't forget to specify certificate for the subscription.**
+- Disabling configuration encryption is recommended.
+
+<a id="bugs-and-feature-requests"></a>
+
+### Referral and Trial Rewards Configuration
 ```
 
 ### YooKassa Configuration
@@ -229,14 +232,11 @@ Before starting the installation, make sure you have the installed [**Docker**](
     - Visit the [HTTP Notifications](https://yookassa.ru/my/merchant/integration/http-notifications) page.
     - Enter the bot’s domain in the notification URL, ending with `/yookassa` (e.g., `https://3xui-shop.com/yookassa`).
     - Select the following events:
-        - `payment.succeeded`
-        - `payment.waiting_for_capture`
-        - `payment.canceled`
+        <a id="bugs-and-feature-requests"></a>
 
-2. **Environment Variables Setup:**
-    - Set the following environment variables:
-        - `YOOKASSA_TOKEN`: Your secret key
-        - `YOOKASSA_SHOP_ID`: Your shop ID
+### Referral and Trial Rewards Configuration
+
+Bot now supports **trial subscriptions** and a **two-level referral reward system**. Here's how it works:
 
 ### YooMoney Configuration
 

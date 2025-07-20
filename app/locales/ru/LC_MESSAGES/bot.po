@@ -47,10 +47,6 @@ msgstr ""
 msgid "payment:gateway:cryptomus"
 msgstr "Cryptomus"
 
-#: app/bot/payment_gateways/heleket.py:42
-msgid "payment:gateway:heleket"
-msgstr "Heleket"
-
 #: app/bot/payment_gateways/telegram_stars.py:38
 msgid "payment:gateway:telegram_stars"
 msgstr "Звёзды Telegram"
@@ -60,18 +56,9 @@ msgid "payment:invoice:title"
 msgstr "Подписка | {devices} на {duration}"
 
 #: app/bot/payment_gateways/telegram_stars.py:58
-#: app/bot/payment_gateways/yookassa.py:63
-#: app/bot/payment_gateways/yoomoney.py:56
+#: app/bot/payment_gateways/telegram_stars.py:58
 msgid "payment:invoice:description"
 msgstr "Подписка | {devices} на {duration}"
-
-#: app/bot/payment_gateways/yookassa.py:46
-msgid "payment:gateway:yookassa"
-msgstr "ЮKassa"
-
-#: app/bot/payment_gateways/yoomoney.py:40
-msgid "payment:gateway:yoomoney"
-msgstr "ЮMoney"
 
 #: app/bot/routers/admin_tools/admin_tools_handler.py:23
 msgid "admin_tools:message:main"
