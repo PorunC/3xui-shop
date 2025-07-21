@@ -78,7 +78,6 @@ class User(Base):
             .options(
                 selectinload(User.transactions),
                 selectinload(User.activated_promocodes),
-                selectinload(User.server),
             )
             .where(*filter)
         )
@@ -93,7 +92,7 @@ class User(Base):
 
     @classmethod
     async def get_all(cls, session: AsyncSession) -> list[Self]:
-        query = await session.execute(select(User).options(selectinload(User.server)))
+        query = await session.execute(select(User))
         return query.scalars().all()
 
     @classmethod
