@@ -39,6 +39,10 @@ class NavCatalog(str, Enum):
     CATEGORY = "category"
     PRODUCT = "product"
     SEARCH = "search"
+    BUY_PRODUCT = "buy_product"
+    ADD_TO_CART = "add_to_cart"
+    VIEW_CART = "view_cart"
+    CHECKOUT = "checkout"
 
 
 class NavSubscription(str, Enum):

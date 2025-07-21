@@ -74,16 +74,30 @@ def category_products_keyboard(category: str, products: list) -> InlineKeyboardM
     return builder.as_markup()
 
 
-def product_details_keyboard(product_id: str) -> InlineKeyboardMarkup:
+def product_details_keyboard(product_id: str, is_available: bool = True) -> InlineKeyboardMarkup:
     """Keyboard for individual product details."""
     builder = InlineKeyboardBuilder()
 
-    builder.row(
-        InlineKeyboardButton(
-            text=_("catalog:button:buy_now"),
-            callback_data=NavSubscription.MAIN,
+    if is_available:
+        builder.row(
+            InlineKeyboardButton(
+                text=_("catalog:button:buy_now"),
+                callback_data=f"{NavCatalog.BUY_PRODUCT}_{product_id}",
+            )
         )
-    )
+        builder.row(
+            InlineKeyboardButton(
+                text=_("catalog:button:add_to_cart"),
+                callback_data=f"{NavCatalog.ADD_TO_CART}_{product_id}",
+            )
+        )
+    else:
+        builder.row(
+            InlineKeyboardButton(
+                text=_("catalog:button:out_of_stock"),
+                callback_data="disabled",
+            )
+        )
 
     builder.row(
         InlineKeyboardButton(

@@ -334,6 +334,64 @@ class ProductService:
             # Generate a unique access token
             return f"ACCESS-{uuid.uuid4().hex[:12].upper()}"
 
+    async def deliver_product_from_catalog(
+        self, user: User, product_id: str, transaction_id: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """Deliver a product from the catalog to a user."""
+        try:
+            # Get product from catalog
+            products = await self.load_products_catalog()
+            product = next((p for p in products if p['id'] == product_id), None)
+            
+            if not product:
+                return {'success': False, 'error': 'Product not found'}
+            
+            # Check availability
+            stock = product.get('stock', 0)
+            is_active = product.get('is_active', True)
+            
+            if not is_active:
+                return {'success': False, 'error': 'Product is not active'}
+            
+            if stock <= 0:
+                return {'success': False, 'error': 'Product is out of stock'}
+            
+            # Create subscription data
+            current_time = datetime.now(timezone.utc)
+            duration_days = product.get('duration_days', 30)
+            
+            subscription_data = ProductSubscriptionData(
+                start_date=current_time,
+                expire_date=current_time + timedelta(days=duration_days) if duration_days > 0 else current_time + timedelta(days=36500),  # 100 years for lifetime
+                traffic_limit=0,  # No traffic limit for digital products
+                is_trial=False,
+                product_id=product['id'],
+                product_name=product['name']
+            )
+            
+            # Deliver the product
+            delivery_result = await self._deliver_product(user, product, subscription_data, transaction_id)
+            
+            if delivery_result['success']:
+                # Store subscription info
+                self._user_subscriptions[user.tg_id] = {
+                    'user_id': user.tg_id,
+                    'product': product,
+                    'subscription_data': subscription_data,
+                    'delivery_info': delivery_result['delivery_info'],
+                    'created_at': current_time.isoformat(),
+                    'transaction_id': transaction_id,
+                    'from_catalog': True
+                }
+                
+                logger.info(f"Product delivered from catalog: {product['name']} to user {user.tg_id}")
+            
+            return delivery_result
+            
+        except Exception as e:
+            logger.error(f"Failed to deliver catalog product {product_id} to user {user.tg_id}: {e}")
+            return {'success': False, 'error': str(e)}
+
     async def _deliver_product(
         self, user: User, product: Dict[str, Any], subscription_data: ProductSubscriptionData, transaction_id: Optional[int] = None
     ) -> Dict[str, Any]:
@@ -359,16 +417,43 @@ class ProductService:
                 delivery_info['license_key'] = await self._generate_product_key(product)
                 delivery_info['activation_instructions'] = product.get('delivery_config', {}).get('template', '')
                 
+                # Format the template with actual values
+                template = product.get('delivery_config', {}).get('template', '')
+                if template:
+                    delivery_info['formatted_message'] = template.format(
+                        product_name=product['name'],
+                        license_key=delivery_info['license_key']
+                    )
+                
             elif delivery_type == 'account_info':
-                # Generate account credentials (placeholder)
-                delivery_info['account_username'] = f"user_{user.tg_id}_{current_time.timestamp():.0f}"
-                delivery_info['account_password'] = f"pwd_{uuid.uuid4().hex[:8]}"
+                # Generate account credentials
+                delivery_info['account_username'] = f"user_{user.tg_id}_{current_time.timestamp():.0f}@demo.com"
+                delivery_info['account_password'] = f"pwd_{uuid.uuid4().hex[:8].upper()}"
                 delivery_info['login_url'] = product.get('delivery_config', {}).get('login_url', 'https://example.com/login')
+                
+                # Format the template with actual values
+                template = product.get('delivery_config', {}).get('template', '')
+                if template:
+                    expiry_date = subscription_data.expire_date.strftime('%Y-%m-%d')
+                    delivery_info['formatted_message'] = template.format(
+                        login_url=delivery_info['login_url'],
+                        account_username=delivery_info['account_username'],
+                        account_password=delivery_info['account_password'],
+                        expires_at=expiry_date
+                    )
                 
             elif delivery_type == 'download_link':
                 # Generate download link
                 delivery_info['download_url'] = f"https://download.example.com/{product['id']}/{uuid.uuid4().hex}"
-                delivery_info['download_expires'] = (current_time + timedelta(seconds=self.delivery_timeout)).isoformat()
+                delivery_info['download_expires'] = (current_time + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
+                
+                # Format the template with actual values
+                template = product.get('delivery_config', {}).get('template', '')
+                if template:
+                    delivery_info['formatted_message'] = template.format(
+                        download_url=delivery_info['download_url'],
+                        download_expires=delivery_info['download_expires']
+                    )
                 
             elif delivery_type == 'api':
                 # Generate API access
