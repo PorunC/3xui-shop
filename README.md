@@ -6,17 +6,7 @@
     <a href="https://github.com/snoups/3xui-shop/blob/main/doc/README.ru_RU.md"><u><b>РУССКИЙ</b></u></a>
 </p>
 
-![3xui-shop](http## 🐛 Support & Issues
-
-If you find a bug or have a feature request, please open an issue on the GitHub repository.
-
-## 💸 Support the Project
-
-You can support development via:
-- **Bitcoin:** `bc1ql53lcaukdv3thxcheh3cmgucwlwkr929gar0cy`
-- **Ethereum:** `0xe604a10258d26c085ada79cdea9a84a5b0894b91`
-- **USDT (TRC20):** `TUqDQ4mdtVJZC76789kPYBMzaLFQBDdKhE`
-- **TON:** `UQDogBlLFgrxkVWvDJn6YniCwrJDro7hbk5AqDMoSzmBQ-KQ`user-attachments/assets/282d10db-a355-4c65-a2cf-eb0e8ec8eed1)
+![3xui-shop](https://github.com/user-attachments/assets/282d10db-a355-4c65-a2cf-eb0e8ec8eed1)
 
 **This project is a Telegram bot for selling digital products and electronic goods.**
 
@@ -38,33 +28,75 @@ For complete installation guide and documentation in English, please visit:
 
 ## 🚀 Quick Start
 
-This is a digital products sales bot that supports:
-- 🛍️ **Digital Product Sales** - Software licenses, game keys, subscriptions
-- 💳 **Multiple Payment Methods** - Cryptomus, Telegram Stars  
-- 🎁 **Trial System** - Free trials for new users
-- 👥 **Referral Program** - Two-level referral rewards
-- 📦 **Automated Delivery** - Instant product delivery
+This is a comprehensive Telegram e-commerce bot for selling digital products and services that supports:
 
-### Installation
+- 🛍️ **Digital Product Sales** - Software licenses, game keys, subscriptions, digital content
+- 💳 **Multiple Payment Gateways** - Telegram Stars (built-in), Cryptomus (crypto payments)
+- 🎁 **Trial System** - Free trials for new users with configurable periods
+- 👥 **Multi-Level Referral Program** - Two-tier referral rewards system
+- 📦 **Automated Delivery** - Instant product delivery with customizable templates
+- 🌍 **Multi-Language Support** - English, Russian, Chinese translations
+- 🔧 **Admin Panel** - Comprehensive management tools
+- 📊 **Analytics & Statistics** - Payment tracking, user analytics, referral stats
+
+### Quick Installation
 ```bash
-# Clone and install
-bash <(curl -Ls https://raw.githubusercontent.com/snoups/3xui-shop/main/scripts/install.sh) -q
+# Clone the repository
+git clone https://github.com/snoups/3xui-shop.git
 cd 3xui-shop
 
-# Configure
-cp plans.example.json plans.json
+# Set up configuration files
 cp .env.example .env
-# Edit .env and plans.json with your settings
+cp plans.example.json plans.json
+cp plans.json app/data/plans.json
 
-# Run
-docker compose build && docker compose up -d
+# Edit configuration files with your settings
+# nano .env          # Configure bot token, domain, payment methods
+# nano plans.json    # Configure subscription plans
+
+# Build and run
+docker compose build
+docker compose up -d
+```
+
+### Alternative Installation (Auto-Script)
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/snoups/3xui-shop/main/scripts/install.sh) -q
 ```
 
 ### Project Status: ✅ Production Ready
 
-- ✅ **Phase 1 Complete** - VPN system removed, core architecture migrated
+- ✅ **Phase 1 Complete** - VPN system removed, core architecture migrated  
 - ✅ **Phase 2 Complete** - Enhanced ProductService, real product catalog, model fixes
 - 🚀 **Ready for Production** - Full digital product sales capability
+
+### 🏗️ Architecture Overview
+
+This bot uses a **modular, service-oriented architecture** built on aiogram:
+
+```
+📦 3xui-shop/
+├── 🤖 app/bot/                    # Core bot logic
+│   ├── 🔌 routers/               # Feature-based message handlers  
+│   ├── 🛠️ services/              # Business logic layer
+│   ├── 💳 payment_gateways/      # Payment system (pluggable)
+│   ├── 🔒 middlewares/           # Authentication, database, etc.
+│   └── 📊 models/                # Data models and containers
+├── 💾 app/db/                     # Database layer
+│   ├── 📋 models/                # SQLAlchemy models
+│   └── 🔄 migration/             # Alembic database migrations
+├── 🌍 app/locales/               # Multi-language support
+├── 📜 scripts/                   # Utility scripts
+└── 🐳 docker-compose.yml         # Container orchestration
+```
+
+**Key Features:**
+- 🔌 **Pluggable Payment Gateways** - Easy to add new payment methods
+- 🛠️ **Service Layer Architecture** - Clean separation of business logic
+- 🌍 **Internationalization** - Built-in multi-language support  
+- 📊 **Comprehensive Analytics** - User tracking, payment stats, referral metrics
+- 🔐 **Advanced Admin Panel** - Full management capabilities
+- 🎁 **Flexible Product System** - Support for various digital product types
 
 ## 📚 Documentation Index
 
@@ -297,63 +329,60 @@ Before starting the installation, make sure you have the installed [**Docker**](
 }
 ```
 
-### 3X-UI Configuration
+### Payment Gateway Configuration
 
-To ensure the bot functions correctly, you must configure the 3X-UI panel:
+#### Telegram Stars (Recommended)
+Telegram Stars is enabled by default and requires no additional configuration:
+```bash
+SHOP_PAYMENT_STARS_ENABLED=True
+```
+- ✅ No API keys required
+- ✅ Built into Telegram
+- ✅ Best user experience
+- ✅ Instant payments
 
-- [Set up SSL certificate.](https://github.com/MHSanaei/3x-ui?tab=readme-ov-file#ssl-certificate)
-- Set up an Inbound **(the first one will be used)** for adding clients.
-- Enable the subscription service with port `2096` and path `/user/`.
-    > **Don't forget to specify certificate for the subscription.**
-- Disabling configuration encryption is recommended.
+#### Cryptomus (Cryptocurrency Payments)
+To enable Cryptomus payment gateway:
 
-<a id="bugs-and-feature-requests"></a>
+1. **Get API Credentials:**
+   - Visit [Cryptomus Dashboard](https://cryptomus.com)
+   - Create merchant account
+   - Get your API key and Merchant ID
 
-### Referral and Trial Rewards Configuration
+2. **Configure Environment:**
+   ```bash
+   SHOP_PAYMENT_CRYPTOMUS_ENABLED=True
+   CRYPTOMUS_API_KEY=your_api_key_here
+   CRYPTOMUS_MERCHANT_ID=your_merchant_id_here
+   ```
+
+3. **Webhook Setup:**
+   - In Cryptomus dashboard, set webhook URL to: `https://yourdomain.com/cryptomus`
+   - The bot automatically handles webhook verification
+
+### Referral and Trial System Configuration
+
+Configure the referral and trial system via environment variables:
+
+```bash
+# Trial System
+SHOP_TRIAL_ENABLED=True
+SHOP_TRIAL_PERIOD=3
+
+# Extended Trial for Referred Users
+SHOP_REFERRED_TRIAL_ENABLED=True
+SHOP_REFERRED_TRIAL_PERIOD=7
+
+# Referral Rewards
+SHOP_REFERRER_REWARD_ENABLED=True
+SHOP_REFERRER_LEVEL_ONE_PERIOD=10    # Days for direct referrer
+SHOP_REFERRER_LEVEL_TWO_PERIOD=3     # Days for second-level referrer
 ```
 
-### YooKassa Configuration
-
-1. **Webhook Setup:**
-    - Visit the [HTTP Notifications](https://yookassa.ru/my/merchant/integration/http-notifications) page.
-    - Enter the bot’s domain in the notification URL, ending with `/yookassa` (e.g., `https://3xui-shop.com/yookassa`).
-    - Select the following events:
-        <a id="bugs-and-feature-requests"></a>
-
-### Referral and Trial Rewards Configuration
-
-Bot now supports **trial subscriptions** and a **two-level referral reward system**. Here's how it works:
-
-### YooMoney Configuration
-
-1. **Webhook Setup:**
-    - Visit the [HTTP Notifications](https://yoomoney.ru/transfer/myservices/http-notification) page.
-    - Enter the bot’s domain in the notification URL, ending with `/yoomoney` (e.g., `https://3xui-shop.com/yoomoney`).
-    - Copy the notification secret key.
-    - Check the box for `sending HTTP-notifications`.
-    - Save the changes.
-
-2. **Environment Variables Setup:**
-    - Set the following environment variables:
-        - `YOOMONEY_WALLET_ID`: Your wallet ID
-        - `YOOMONEY_NOTIFICATION_SECRET`: Your notification secret key
-
-### 3X-UI Configuration
-
-To ensure the bot functions correctly, you must configure the 3X-UI panel:
-
-- [Set up SSL certificate.](https://github.com/MHSanaei/3x-ui?tab=readme-ov-file#ssl-certificate)
-- Set up an Inbound **(the first one will be used)** for adding clients.
-- Enable the subscription service with port `2096` and path `/user/`.
-    > **Don’t forget to specify certificate for the subscription.**
-- Disabling configuration encryption is recommended.
-
-<a id="bugs-and-feature-requests"></a>
-
-### Referral and Trial Rewards Configuration
-
-Bot now supports **trial subscriptions** and a **two-level referral reward system**. Here’s how it works:
-All configuration is available via `.env` [(see it above)](#environment-variables-configuration).
+**How it works:**
+- **Trial Period**: Free access for new users
+- **Extended Trial**: Longer trial for users who join via referral
+- **Two-Level Rewards**: Both the direct referrer and their referrer get rewards when someone makes a purchase
 
 | Type of reward | How it works |
 | - | - |
@@ -361,10 +390,125 @@ All configuration is available via `.env` [(see it above)](#environment-variable
 | Extended Trial period | This option is just like previous 'trial period', but allows to configure **extended trial period** for an invited user. |
 | Two-Level Referral Payment Rewards | When a referred user pays for a subscription, the referrer and the second-level referrer (the user who invited the referrer) receive fixed count of days at the moment fore each level. |
 
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Bot doesn't respond to /start command
+
+**Possible causes and solutions:**
+
+1. **Empty plans.json file:**
+   ```bash
+   # Copy example plans to both locations
+   cp plans.example.json plans.json
+   cp plans.json app/data/plans.json
+   
+   # Restart bot after fixing
+   docker compose restart bot
+   ```
+
+2. **SSL certificate issues with domain:**
+   ```bash
+   # Check your domain resolves correctly
+   nslookup yourdomain.com
+   
+   # Ensure port 80 is accessible for Let's Encrypt
+   curl -I http://yourdomain.com
+   ```
+
+3. **Database migration issues:**
+   ```bash
+   # Run migrations manually
+   ./scripts/manage_migrations.sh --upgrade
+   ```
+
+4. **Service initialization errors:**
+   ```bash
+   # Check bot logs
+   docker compose logs bot --tail 50
+   ```
+
+#### Payment gateway errors
+
+1. **Cryptomus not working:**
+   - Verify API credentials are correct
+   - Check webhook URL is accessible from internet
+   - Ensure domain has valid SSL certificate
+
+2. **Telegram Stars not working:**
+   - Verify bot token is correct
+   - Check bot has payment provider enabled in BotFather
+
+#### SSL Certificate failures
+
+```bash
+# Check Traefik logs for certificate issues
+docker compose logs traefik --tail 50
+
+# Common solution: restart containers after fixing DNS
+docker compose restart
+```
+
+### Useful Commands
+
+```bash
+# View all logs
+docker compose logs
+
+# Restart specific service
+docker compose restart bot
+
+# Update database schema
+./scripts/manage_migrations.sh --upgrade
+
+# Compile translations
+./scripts/manage_translations.sh --update
+
+# Full restart (clears all data)
+docker compose down && docker compose up -d
+```
+
+### Development & Testing
+
+For development, you can use polling mode instead of webhooks:
+
+```python
+# Create test_polling.py (see project files)
+# Run with: python test_polling.py
+```
+
+### 📋 Deployment Checklist
+
+Before going live, ensure:
+
+- [ ] **Domain & SSL**: Domain resolves to your server, port 80/443 accessible
+- [ ] **Bot Configuration**: Valid bot token from @BotFather
+- [ ] **Environment**: All required variables in `.env` file
+- [ ] **Plans**: Valid `plans.json` with your products
+- [ ] **Database**: Migrations applied successfully  
+- [ ] **Payments**: At least one payment gateway configured
+- [ ] **Admin Access**: Your Telegram ID set as `BOT_DEV_ID`
+- [ ] **Testing**: `/start` command responds correctly
+- [ ] **Monitoring**: Log collection configured
+- [ ] **Backup**: Database backup strategy in place
+
+```bash
+# Quick health check
+docker compose logs bot --tail 10    # Should show "Bot started"
+curl https://yourdomain.com/webhook  # Should return 200 OK
+```
+
 ## 🐛 Bugs and Feature Requests
 
 If you find a bug or have a feature request, please open an issue on the GitHub repository.
 You're also welcome to contribute to the project by opening a pull request.
+
+**Before reporting issues, please:**
+1. Check the troubleshooting section above
+2. Include relevant log output
+3. Specify your environment (Docker/direct install)
+4. Include your `.env` configuration (without sensitive data)
 
 <a id="support-the-project"></a>
 
