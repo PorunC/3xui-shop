@@ -43,11 +43,12 @@ def main_menu_keyboard(
             )
         )
 
-    # Core buttons - Profile and Catalog
+    # Core buttons - Profile and Subscription  
+    logger.debug("🔤 Translating core button texts...")
     profile_text = _("main_menu:button:profile")
-    catalog_text = _("main_menu:button:catalog")
+    subscription_text = _("main_menu:button:subscription")
     logger.debug(f"👤 Profile button: '{profile_text}' -> {NavProfile.MAIN}")
-    logger.debug(f"🛍️ Catalog button: '{catalog_text}' -> {NavCatalog.MAIN}")
+    logger.debug(f"� Subscription button: '{subscription_text}' -> {NavSubscription.MAIN}")
     
     builder.row(
         InlineKeyboardButton(
@@ -55,36 +56,46 @@ def main_menu_keyboard(
             callback_data=NavProfile.MAIN,
         ),
         InlineKeyboardButton(
-            text=catalog_text,
-            callback_data=NavCatalog.MAIN,
+            text=subscription_text,
+            callback_data=NavSubscription.MAIN,
         ),
     )
-    # Third row - Referral and Support
+    # Third row - Catalog, Referral and Support
+    logger.debug("🔤 Translating catalog, support and referral button texts...")
+    catalog_text = _("main_menu:button:catalog")
     referral_text = _("main_menu:button:referral") if is_referral_available else None
     support_text = _("main_menu:button:support")
     
+    logger.debug(f"🛍️ Catalog button: '{catalog_text}' -> {NavCatalog.MAIN}")
     if is_referral_available:
         logger.debug(f"👥 Adding referral button: '{referral_text}' -> {NavReferral.MAIN}")
     logger.debug(f"🆘 Support button: '{support_text}' -> {NavSupport.MAIN}")
     
-    builder.row(
-        *(
-            [
-                InlineKeyboardButton(
-                    text=referral_text,
-                    callback_data=NavReferral.MAIN,
-                )
-            ]
-            if is_referral_available
-            else []
-        ),
-        InlineKeyboardButton(
-            text=support_text,
-            callback_data=NavSupport.MAIN,
-        ),
+    # Build catalog button
+    catalog_button = InlineKeyboardButton(
+        text=catalog_text,
+        callback_data=NavCatalog.MAIN,
     )
+    
+    # Build support button
+    support_button = InlineKeyboardButton(
+        text=support_text,
+        callback_data=NavSupport.MAIN,
+    )
+    
+    # Add row with catalog and referral/support based on availability
+    if is_referral_available:
+        referral_button = InlineKeyboardButton(
+            text=referral_text,
+            callback_data=NavReferral.MAIN,
+        )
+        builder.row(catalog_button, referral_button)
+        builder.row(support_button)
+    else:
+        builder.row(catalog_button, support_button)
 
     if is_admin:
+        logger.debug("🔤 Translating admin tools button text...")
         admin_tools_text = _("main_menu:button:admin_tools")
         logger.debug(f"🛠 Adding admin tools button: '{admin_tools_text}' -> {NavAdminTools.MAIN}")
         builder.row(

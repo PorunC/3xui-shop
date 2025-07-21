@@ -78,6 +78,7 @@ async def command_main_menu(
     command: CommandObject,
     is_new_user: bool,
 ) -> None:
+    logger.debug(f"🚀 START COMMAND RECEIVED from user {user.tg_id} (is_new_user: {is_new_user})")
     logger.info(f"User {user.tg_id} opened main menu page.")
     previous_message_id = await state.get_value(MAIN_MESSAGE_ID_KEY)
 
@@ -109,8 +110,13 @@ async def command_main_menu(
     logger.debug(f"🎁 Trial available for user {user.tg_id}: {trial_available}")
     logger.debug(f"🎁 Referred trial available for user {user.tg_id}: {referred_trial_available}")
     
+    # Translate main menu message text
+    logger.debug("🔤 Translating main menu message text...")
+    main_menu_text = _("main_menu:message:main").format(name=user.first_name)
+    logger.debug(f"💬 Main menu text: '{main_menu_text}'")
+    
     main_menu = await message.answer(
-        text=_("main_menu:message:main").format(name=user.first_name),
+        text=main_menu_text,
         reply_markup=main_menu_keyboard(
             is_admin,
             is_referral_available=config.shop.REFERRER_REWARD_ENABLED,
