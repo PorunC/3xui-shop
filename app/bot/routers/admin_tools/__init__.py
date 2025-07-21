@@ -4,6 +4,7 @@ from . import (
     invites_handler,
     maintenance_handler,
     notification_handler,
+    product_handler,
     promocode_handler,
     restart_handler,
     server_handler,  # Restored - now contains disabled server management

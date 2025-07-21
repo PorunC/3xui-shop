@@ -49,11 +49,12 @@ async def callback_profile(
     services: ServicesContainer,
     state: FSMContext,
 ) -> None:
-    logger.info(f"User {user.tg_id} opened profile page.")
+    logger.info(f"👤 User {user.tg_id} clicked profile button -> opening profile page")
     await state.update_data({PREVIOUS_CALLBACK_KEY: NavProfile.MAIN})
 
     # Get subscription info from ProductService
     subscription_info = await services.product.get_user_subscription_info(user)
+    logger.debug(f"📊 Subscription info for user {user.tg_id}: {subscription_info}")
     
     # Create client_data equivalent from product service
     client_data = None
@@ -61,16 +62,24 @@ async def callback_profile(
         client_data = type('ClientData', (), {
             'has_subscription_expired': subscription_info['status'] != 'active',
         })()
+        logger.debug(f"✅ Active subscription found for user {user.tg_id}")
+    else:
+        logger.debug(f"❌ No active subscription for user {user.tg_id}")
 
     reply_markup = (
         profile_keyboard()
         if client_data and not client_data.has_subscription_expired
         else buy_subscription_keyboard()
     )
+    
+    profile_text = await prepare_message(user=user, client_data=client_data)
+    logger.debug(f"📝 Profile text prepared for user {user.tg_id}")
+    
     await callback.message.edit_text(
-        text=await prepare_message(user=user, client_data=client_data),
+        text=profile_text,
         reply_markup=reply_markup,
     )
+    logger.debug(f"✅ Profile page displayed for user {user.tg_id}")
 
 
 @router.callback_query(F.data == NavProfile.SHOW_KEY)
@@ -102,3 +111,70 @@ async def callback_show_key(
         await asyncio.sleep(1)
         await message.edit_text(text=key_text.format(key=key, seconds_text=seconds_text))
     await message.delete()
+
+
+@router.callback_query(F.data == NavProfile.SHOW_ORDERS)
+async def callback_show_orders(
+    callback: CallbackQuery,
+    user: User,
+    services: ServicesContainer,
+) -> None:
+    """Show user's order history."""
+    logger.info(f"User {user.tg_id} requested order history.")
+    
+    # Get user's subscription info (acts as order history for now)
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    if subscription_info and subscription_info.get('status') in ['active', 'expired']:
+        text = _("profile:message:orders").format(
+            product_name=subscription_info['product_name'],
+            status=subscription_info['status'],
+            expires_at=subscription_info.get('expires_at', 'N/A'),
+            days_remaining=subscription_info.get('days_remaining', 0)
+        )
+    else:
+        text = _("profile:message:no_orders")
+    
+    from .keyboard import profile_keyboard
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=profile_keyboard(),
+    )
+
+
+@router.callback_query(F.data == NavProfile.SHOW_PURCHASED_PRODUCTS)
+async def callback_show_purchased_products(
+    callback: CallbackQuery,
+    user: User,
+    services: ServicesContainer,
+) -> None:
+    """Show user's purchased products."""
+    logger.info(f"User {user.tg_id} requested purchased products.")
+    
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    if subscription_info and subscription_info.get('status') == 'active':
+        delivery_info = subscription_info.get('delivery_info', {})
+        product_info = f"""
+📦 **{subscription_info['product_name']}**
+📅 到期时间: {subscription_info.get('expires_at', 'N/A')}
+⏰ 剩余天数: {subscription_info.get('days_remaining', 0)} 天
+
+🔑 访问信息:
+"""
+        if delivery_info.get('license_key'):
+            product_info += f"许可证密钥: `{delivery_info['license_key']}`\n"
+        if delivery_info.get('access_token'):
+            product_info += f"访问令牌: `{delivery_info['access_token']}`\n"
+        if delivery_info.get('api_key'):
+            product_info += f"API密钥: `{delivery_info['api_key']}`\n"
+            
+        text = product_info
+    else:
+        text = _("profile:message:no_purchased_products")
+    
+    from .keyboard import profile_keyboard
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=profile_keyboard(),
+    )

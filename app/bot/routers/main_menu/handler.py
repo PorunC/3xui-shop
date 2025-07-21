@@ -99,15 +99,26 @@ async def command_main_menu(
             await process_invite_attribution(session=session, user=user, invite_hash=command.args)
 
     is_admin = await IsAdmin()(user_id=user.tg_id)
+    logger.debug(f"🔐 User {user.tg_id} admin status: {is_admin}")
+    logger.debug(f"⚙️ Config - REFERRER_REWARD_ENABLED: {config.shop.REFERRER_REWARD_ENABLED}")
+    
+    # Get service status with debug logging
+    trial_available = await services.subscription.is_trial_available(user)
+    referred_trial_available = await services.referral.is_referred_trial_available(user)
+    
+    logger.debug(f"🎁 Trial available for user {user.tg_id}: {trial_available}")
+    logger.debug(f"🎁 Referred trial available for user {user.tg_id}: {referred_trial_available}")
+    
     main_menu = await message.answer(
         text=_("main_menu:message:main").format(name=user.first_name),
         reply_markup=main_menu_keyboard(
             is_admin,
             is_referral_available=config.shop.REFERRER_REWARD_ENABLED,
-            is_trial_available=await services.subscription.is_trial_available(user),
-            is_referred_trial_available=await services.referral.is_referred_trial_available(user),
+            is_trial_available=trial_available,
+            is_referred_trial_available=referred_trial_available,
         ),
     )
+    logger.info(f"📱 Main menu displayed for user {user.tg_id} with message_id: {main_menu.message_id}")
     await state.update_data({MAIN_MESSAGE_ID_KEY: main_menu.message_id})
 
 
@@ -122,14 +133,23 @@ async def callback_main_menu(
     logger.info(f"User {user.tg_id} returned to main menu page.")
     await state.clear()
     await state.update_data({MAIN_MESSAGE_ID_KEY: callback.message.message_id})
+    
     is_admin = await IsAdmin()(user_id=user.tg_id)
+    logger.debug(f"🔐 User {user.tg_id} admin status: {is_admin}")
+    
+    trial_available = await services.subscription.is_trial_available(user)
+    referred_trial_available = await services.referral.is_referred_trial_available(user)
+    
+    logger.debug(f"🎁 Trial available for user {user.tg_id}: {trial_available}")
+    logger.debug(f"🎁 Referred trial available for user {user.tg_id}: {referred_trial_available}")
+    
     await callback.message.edit_text(
         text=_("main_menu:message:main").format(name=user.first_name),
         reply_markup=main_menu_keyboard(
             is_admin,
             is_referral_available=config.shop.REFERRER_REWARD_ENABLED,
-            is_trial_available=await services.subscription.is_trial_available(user),
-            is_referred_trial_available=await services.referral.is_referred_trial_available(user),
+            is_trial_available=trial_available,
+            is_referred_trial_available=referred_trial_available,
         ),
     )
 

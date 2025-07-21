@@ -5,6 +5,7 @@ from app.bot.utils.constants import CONNECTION_WEBHOOK
 
 from . import (
     admin_tools,
+    catalog,
     download,
     main_menu,
     misc,
@@ -24,6 +25,7 @@ def include(app: Application, dispatcher: Dispatcher) -> None:
         profile.handler.router,
         referral.handler.router,
         support.handler.router,
+        catalog.handler.router,
         download.handler.router,
         subscription.subscription_handler.router,
         subscription.payment_handler.router,
@@ -34,6 +36,7 @@ def include(app: Application, dispatcher: Dispatcher) -> None:
         admin_tools.invites_handler.router,
         admin_tools.maintenance_handler.router,
         admin_tools.notification_handler.router,
+        admin_tools.product_handler.router,
         admin_tools.promocode_handler.router,
         admin_tools.restart_handler.router,
         admin_tools.server_handler.router,

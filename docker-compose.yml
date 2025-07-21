@@ -40,11 +40,18 @@ services:
       - ./app/logs:/app/logs
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/
+      - LOG_LEVEL=DEBUG
     stop_signal: SIGINT
     restart: unless-stopped
     command: sh -c " 
+      echo '🔧 Starting bot deployment...' &&
       poetry run pybabel compile -d /app/locales -D bot && 
+      echo '🌐 Translation files compiled' &&
       poetry run alembic -c /app/db/alembic.ini upgrade head && 
+      echo '🗄️ Database migrations completed' &&
+      echo '🚀 Starting bot...' &&
       poetry run python /app/__main__.py"
     depends_on:
       - redis

@@ -11,6 +11,8 @@ class NavMain(str, Enum):
 class NavProfile(str, Enum):
     MAIN = "profile"
     SHOW_KEY = "show_key"
+    SHOW_ORDERS = "show_orders"
+    SHOW_PURCHASED_PRODUCTS = "show_purchased_products"
 
 
 class NavReferral(str, Enum):
@@ -30,6 +32,13 @@ class NavDownload(str, Enum):
     PLATFORM_IOS = f"{PLATFORM}_ios"
     PLATFORM_ANDROID = f"{PLATFORM}_android"
     PLATFORM_WINDOWS = f"{PLATFORM}_windows"
+
+
+class NavCatalog(str, Enum):
+    MAIN = "catalog"
+    CATEGORY = "category"
+    PRODUCT = "product"
+    SEARCH = "search"
 
 
 class NavSubscription(str, Enum):
@@ -63,6 +72,13 @@ class NavAdminTools(str, Enum):
     SYNC_SERVERS = "sync_servers"
     STATISTICS = "statistics"
     USER_EDITOR = "user_editor"
+    
+    PRODUCT_MANAGEMENT = "product_management"
+    PRODUCT_LIST = "product_list"
+    PRODUCT_ADD = "product_add"
+    PRODUCT_EDIT = "product_edit"
+    PRODUCT_DELETE = "product_delete"
+    PRODUCT_TOGGLE_STATUS = "product_toggle_status"
 
     INVITE_EDITOR = "invite_editor"
     CREATE_INVITE = "create_invite"

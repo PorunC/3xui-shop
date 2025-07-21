@@ -3,7 +3,7 @@ from aiogram.utils.i18n import gettext as _
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from app.bot.routers.misc.keyboard import back_to_main_menu_button
-from app.bot.utils.navigation import NavDownload, NavProfile, NavSubscription
+from app.bot.utils.navigation import NavCatalog, NavProfile, NavSubscription
 
 
 def buy_subscription_keyboard() -> InlineKeyboardMarkup:
@@ -31,8 +31,14 @@ def profile_keyboard() -> InlineKeyboardMarkup:
     )
     builder.row(
         InlineKeyboardButton(
-            text=_("profile:button:connect"),
-            callback_data=NavDownload.MAIN,
+            text=_("profile:button:my_orders"),
+            callback_data=NavProfile.SHOW_ORDERS,
+        )
+    )
+    builder.row(
+        InlineKeyboardButton(
+            text=_("profile:button:browse_catalog"),
+            callback_data=NavCatalog.MAIN,
         )
     )
 

@@ -83,6 +83,16 @@ async def main() -> None:
     # Set up internationalization (i18n)
     i18n = I18n(path=DEFAULT_LOCALES_DIR, default_locale=DEFAULT_LANGUAGE, domain=I18N_DOMAIN)
     I18n.set_current(i18n)
+    logging.info(f"🌐 i18n initialized - path: {DEFAULT_LOCALES_DIR}, locale: {DEFAULT_LANGUAGE}, domain: {I18N_DOMAIN}")
+    
+    # Test translation loading
+    try:
+        from aiogram.utils.i18n import gettext as _
+        test_catalog = _("main_menu:button:catalog")
+        test_profile = _("main_menu:button:profile")
+        logging.info(f"🧪 Translation test - catalog: '{test_catalog}', profile: '{test_profile}'")
+    except Exception as e:
+        logging.error(f"❌ Translation test failed: {e}")
 
     # Initialize services
     services_container = await services.initialize(config=config, session=db.session, bot=bot)

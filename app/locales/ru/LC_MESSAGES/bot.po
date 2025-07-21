@@ -714,17 +714,16 @@ msgid "main_menu:message:main"
 msgstr ""
 "Добро пожаловать, {name}! 🎉\n"
 "\n"
-"3X-UI SHOP — ваш надёжный помощник в мире свободного интернета. Мы "
-"предлагаем безопасные и быстрые соединения с любыми интернет-сервисами с "
-"использованием протокола XRAY. Наш сервис работает в Китае, Иране и "
-"России.\n"
+"3X-UI SHOP — ваш надёжный цифровой магазин премиум товаров. Мы "
+"предлагаем лицензии программного обеспечения, игровые ключи, подписки "
+"и цифровой контент с мгновенной доставкой и профессиональной поддержкой.\n"
 "\n"
-"🚀 ВЫСОКАЯ СКОРОСТЬ\n"
-"🔒 БЕЗОПАСНОСТЬ\n"
-"📱 ПОДДЕРЖКА ВСЕХ ПЛАТФОРМ\n"
-"♾️ БЕЗЛИМИТ\n"
-"✅ ГАРАНТИЯ И ПРОБНЫЙ ПЕРИОД\n"
-"👥 РЕФЕРАЛЬНАЯ СИСТЕМА\n"
+"�️ ПРЕМИУМ ЦИФРОВЫЕ ТОВАРЫ\n"
+"⚡ МГНОВЕННАЯ ДОСТАВКА\n"
+"📱 МНОЖЕСТВО КАТЕГОРИЙ\n"
+"🔒 БЕЗОПАСНЫЕ ТРАНЗАКЦИИ\n"
+"✅ ГАРАНТИЯ И ПОДДЕРЖКА\n"
+"👥 РЕФЕРАЛЬНЫЕ НАГРАДЫ\n"
 
 #: app/bot/routers/main_menu/keyboard.py:25
 msgid "referral:button:get_referred_trial"
@@ -741,6 +740,85 @@ msgstr "👤 Профиль"
 #: app/bot/routers/main_menu/keyboard.py:42
 msgid "main_menu:button:subscription"
 msgstr "💳 Подписка"
+
+#: app/bot/routers/main_menu/keyboard.py:42
+msgid "main_menu:button:catalog"
+msgstr "🛍️ Каталог товаров"
+
+# Catalog translations
+msgid "catalog:message:main"
+msgstr "🛍️ <b>Каталог товаров</b>\n\nПросматривайте наши цифровые товары по категориям или покупайте напрямую:"
+
+msgid "catalog:button:software"
+msgstr "💻 Программное обеспечение"
+
+msgid "catalog:button:gaming" 
+msgstr "🎮 Игры"
+
+msgid "catalog:button:subscription"
+msgstr "📺 Подписки"
+
+msgid "catalog:button:digital"
+msgstr "📁 Цифровой контент"
+
+msgid "catalog:button:education"
+msgstr "🎓 Образование"
+
+msgid "catalog:button:buy_products"
+msgstr "💳 Купить товары"
+
+msgid "catalog:button:buy_now"
+msgstr "💰 Купить сейчас"
+
+msgid "catalog:message:category"
+msgstr "📦 <b>Товары категории {category}</b>\n\nНайдено {count} товаров в этой категории:"
+
+msgid "catalog:message:no_products_in_category"
+msgstr "😔 В категории {category} пока нет доступных товаров."
+
+msgid "catalog:message:product_details"
+msgstr "📦 <b>{name}</b>\n\n{description}\n\n💰 <b>Цена:</b> {price} {currency}\n🏷️ <b>Категория:</b> {category}\n\n✨ <b>Особенности:</b>\n{features}"
+
+msgid "catalog:message:product_not_found"
+msgstr "❌ Товар не найден."
+
+msgid "catalog:message:no_features"
+msgstr "Особенности не указаны."
+
+msgid "catalog:category:software"
+msgstr "Программное обеспечение"
+
+msgid "catalog:category:gaming"
+msgstr "Игры"
+
+msgid "catalog:category:subscription"
+msgstr "Подписки"
+
+msgid "catalog:category:digital"
+msgstr "Цифровой контент"
+
+msgid "catalog:category:education"
+msgstr "Образование"
+
+# Profile updates
+msgid "profile:button:my_orders"
+msgstr "📦 Мои заказы"
+
+msgid "profile:button:browse_catalog"
+msgstr "🛍️ Просмотреть каталог"
+
+msgid "profile:message:orders"
+msgstr "📦 <b>Ваши заказы:</b>\n\n🛍️ Товар: {product_name}\n📊 Статус: {status}\n📅 Истекает: {expires_at}\n⏰ Дней осталось: {days_remaining}"
+
+msgid "profile:message:no_orders"
+msgstr "📦 У вас пока нет заказов.\n\nПросмотрите наш каталог, чтобы найти отличные цифровые товары!"
+
+msgid "profile:message:no_purchased_products"
+msgstr "🛍️ У вас пока нет купленных товаров.\n\nЗагляните в наш каталог за удивительными цифровыми товарами!"
+
+# Admin tools updates
+msgid "admin_tools:button:product_management"
+msgstr "📦 Управление товарами"
 
 #: app/bot/routers/main_menu/keyboard.py:50
 msgid "main_menu:button:referral"

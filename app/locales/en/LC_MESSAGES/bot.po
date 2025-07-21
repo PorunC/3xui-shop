@@ -706,16 +706,16 @@ msgid "main_menu:message:main"
 msgstr ""
 "Welcome, {name}! 🎉\n"
 "\n"
-"3X-UI SHOP — your reliable assistant in the world of free internet. We "
-"offer safe and fast connections to any internet services using the XRAY "
-"protocol. Our service works even in China, Iran, and Russia.\n"
+"3X-UI SHOP — your trusted digital marketplace for premium products. We "
+"offer software licenses, game keys, subscriptions, and digital content "
+"with instant delivery and professional support.\n"
 "\n"
-"🚀 HIGH SPEED\n"
-"🔒 SECURITY\n"
-"📱 SUPPORT FOR ALL PLATFORMS\n"
-"♾️ UNLIMITED\n"
-"✅ GUARANTEE AND TRIAL PERIOD\n"
-"👥 REFERRAL SYSTEM\n"
+"�️ PREMIUM DIGITAL PRODUCTS\n"
+"⚡ INSTANT DELIVERY\n"
+"📱 MULTIPLE CATEGORIES\n"
+"🔒 SECURE TRANSACTIONS\n"
+"✅ GUARANTEE AND SUPPORT\n"
+"👥 REFERRAL REWARDS\n"
 
 #: app/bot/routers/main_menu/keyboard.py:25
 msgid "referral:button:get_referred_trial"
@@ -732,6 +732,85 @@ msgstr "👤 Profile"
 #: app/bot/routers/main_menu/keyboard.py:42
 msgid "main_menu:button:subscription"
 msgstr "💳 Subscription"
+
+#: app/bot/routers/main_menu/keyboard.py:42
+msgid "main_menu:button:catalog"
+msgstr "🛍️ Product Catalog"
+
+# Catalog translations
+msgid "catalog:message:main"
+msgstr "🛍️ <b>Product Catalog</b>\n\nBrowse our digital products by category or purchase directly:"
+
+msgid "catalog:button:software"
+msgstr "💻 Software"
+
+msgid "catalog:button:gaming" 
+msgstr "🎮 Gaming"
+
+msgid "catalog:button:subscription"
+msgstr "📺 Subscriptions"
+
+msgid "catalog:button:digital"
+msgstr "📁 Digital Content"
+
+msgid "catalog:button:education"
+msgstr "🎓 Education"
+
+msgid "catalog:button:buy_products"
+msgstr "💳 Buy Products"
+
+msgid "catalog:button:buy_now"
+msgstr "💰 Buy Now"
+
+msgid "catalog:message:category"
+msgstr "📦 <b>{category} Products</b>\n\nFound {count} products in this category:"
+
+msgid "catalog:message:no_products_in_category"
+msgstr "😔 No products available in {category} category yet."
+
+msgid "catalog:message:product_details"
+msgstr "📦 <b>{name}</b>\n\n{description}\n\n💰 <b>Price:</b> {price} {currency}\n🏷️ <b>Category:</b> {category}\n\n✨ <b>Features:</b>\n{features}"
+
+msgid "catalog:message:product_not_found"
+msgstr "❌ Product not found."
+
+msgid "catalog:message:no_features"
+msgstr "No specific features listed."
+
+msgid "catalog:category:software"
+msgstr "Software"
+
+msgid "catalog:category:gaming"
+msgstr "Gaming"
+
+msgid "catalog:category:subscription"
+msgstr "Subscriptions"
+
+msgid "catalog:category:digital"
+msgstr "Digital Content"
+
+msgid "catalog:category:education"
+msgstr "Education"
+
+# Profile updates
+msgid "profile:button:my_orders"
+msgstr "📦 My Orders"
+
+msgid "profile:button:browse_catalog"
+msgstr "🛍️ Browse Catalog"
+
+msgid "profile:message:orders"
+msgstr "📦 <b>Your Orders:</b>\n\n🛍️ Product: {product_name}\n📊 Status: {status}\n📅 Expires: {expires_at}\n⏰ Days remaining: {days_remaining}"
+
+msgid "profile:message:no_orders"
+msgstr "📦 You haven't made any orders yet.\n\nBrowse our catalog to find great digital products!"
+
+msgid "profile:message:no_purchased_products"
+msgstr "🛍️ You haven't purchased any products yet.\n\nCheck out our catalog for amazing digital goods!"
+
+# Admin tools updates
+msgid "admin_tools:button:product_management"
+msgstr "📦 Product Management"
 
 #: app/bot/routers/main_menu/keyboard.py:50
 msgid "main_menu:button:referral"

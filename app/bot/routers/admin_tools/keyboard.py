@@ -26,6 +26,12 @@ def admin_tools_keyboard(is_dev: bool) -> InlineKeyboardMarkup:
 
     builder.row(
         InlineKeyboardButton(
+            text=_("admin_tools:button:product_management"),
+            callback_data=NavAdminTools.PRODUCT_MANAGEMENT,
+        )
+    )
+    builder.row(
+        InlineKeyboardButton(
             text=_("admin_tools:button:statistics"),
             callback_data=NavAdminTools.STATISTICS,
         )

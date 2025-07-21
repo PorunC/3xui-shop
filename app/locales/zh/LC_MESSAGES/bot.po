@@ -704,15 +704,15 @@ msgid "main_menu:message:main"
 msgstr ""
 "欢迎，{name}！🎉\n"
 "\n"
-"3X-UI SHOP — 您在自由互联网世界中的可靠助手。我们使用 XRAY "
-"协议提供安全快速的互联网服务连接。我们的服务甚至在中国、伊朗和俄罗斯都能正常工作。\n"
+"3X-UI SHOP — 您值得信赖的高级产品数字市场。我们提供软件许可证、"
+"游戏密钥、订阅服务和数字内容，具有即时交付和专业支持。\n"
 "\n"
-"🚀 高速\n"
-"🔒 安全\n"
-"📱 支持所有平台\n"
-"♾️ 无限制\n"
-"✅ 保证和试用期\n"
-"👥 推荐系统\n"
+"�️ 高级数字产品\n"
+"⚡ 即时交付\n"
+"📱 多种类别\n"
+"🔒 安全交易\n"
+"✅ 保证和支持\n"
+"👥 推荐奖励\n"
 
 #: app/bot/routers/main_menu/keyboard.py:25
 msgid "referral:button:get_referred_trial"
@@ -729,6 +729,85 @@ msgstr "👤 个人资料"
 #: app/bot/routers/main_menu/keyboard.py:42
 msgid "main_menu:button:subscription"
 msgstr "💳 订阅"
+
+#: app/bot/routers/main_menu/keyboard.py:42
+msgid "main_menu:button:catalog"
+msgstr "🛍️ 商品目录"
+
+# Catalog translations
+msgid "catalog:message:main"
+msgstr "🛍️ <b>商品目录</b>\n\n按类别浏览我们的数字商品或直接购买："
+
+msgid "catalog:button:software"
+msgstr "💻 软件"
+
+msgid "catalog:button:gaming" 
+msgstr "🎮 游戏"
+
+msgid "catalog:button:subscription"
+msgstr "📺 订阅"
+
+msgid "catalog:button:digital"
+msgstr "📁 数字内容"
+
+msgid "catalog:button:education"
+msgstr "🎓 教育"
+
+msgid "catalog:button:buy_products"
+msgstr "💳 购买商品"
+
+msgid "catalog:button:buy_now"
+msgstr "💰 立即购买"
+
+msgid "catalog:message:category"
+msgstr "📦 <b>{category}商品</b>\n\n在此类别中找到 {count} 个商品："
+
+msgid "catalog:message:no_products_in_category"
+msgstr "😔 {category}类别中还没有可用商品。"
+
+msgid "catalog:message:product_details"
+msgstr "📦 <b>{name}</b>\n\n{description}\n\n💰 <b>价格：</b> {price} {currency}\n🏷️ <b>类别：</b> {category}\n\n✨ <b>特点：</b>\n{features}"
+
+msgid "catalog:message:product_not_found"
+msgstr "❌ 未找到商品。"
+
+msgid "catalog:message:no_features"
+msgstr "未列出具体特点。"
+
+msgid "catalog:category:software"
+msgstr "软件"
+
+msgid "catalog:category:gaming"
+msgstr "游戏"
+
+msgid "catalog:category:subscription"
+msgstr "订阅"
+
+msgid "catalog:category:digital"
+msgstr "数字内容"
+
+msgid "catalog:category:education"
+msgstr "教育"
+
+# Profile updates
+msgid "profile:button:my_orders"
+msgstr "📦 我的订单"
+
+msgid "profile:button:browse_catalog"
+msgstr "🛍️ 浏览目录"
+
+msgid "profile:message:orders"
+msgstr "📦 <b>您的订单：</b>\n\n🛍️ 商品：{product_name}\n📊 状态：{status}\n📅 到期：{expires_at}\n⏰ 剩余天数：{days_remaining}"
+
+msgid "profile:message:no_orders"
+msgstr "📦 您还没有任何订单。\n\n浏览我们的目录查找优秀的数字商品！"
+
+msgid "profile:message:no_purchased_products"
+msgstr "🛍️ 您还没有购买任何商品。\n\n查看我们的目录获取精彩数字商品！"
+
+# Admin tools updates
+msgid "admin_tools:button:product_management"
+msgstr "📦 商品管理"
 
 #: app/bot/routers/main_menu/keyboard.py:50
 msgid "main_menu:button:referral"
@@ -893,7 +972,7 @@ msgstr ""
 "\n"
 "<i>您已获得 <b>{duration}</b> 订阅时间。</i>\n"
 "\n"
-"<b>点击"连接"按钮下载并连接到您的新 VPN 应用程序</b>\n"
+"<b>点击\"连接\"按钮下载并连接到您的新 VPN 应用程序</b>\n"
 "您的应用程序私钥始终在 <b>个人资料</b> 中可用"
 
 #: app/bot/routers/referral/handler.py:173
