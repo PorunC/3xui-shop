@@ -87,8 +87,8 @@ async def main() -> None:
     # Initialize services
     services_container = await services.initialize(config=config, session=db.session, bot=bot)
 
-    # Sync servers
-    await services_container.server_pool.sync_servers()
+    # TODO: Initialize product catalog or inventory sync
+    # await services_container.product.sync_products()
 
     # Register payment gateways
     gateway_factory = GatewayFactory()

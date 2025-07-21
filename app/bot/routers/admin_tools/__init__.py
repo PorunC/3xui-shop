@@ -6,7 +6,7 @@ from . import (
     notification_handler,
     promocode_handler,
     restart_handler,
-    server_handler,
+    server_handler,  # Restored - now contains disabled server management
     statistics_handler,
     user_handler,
 )

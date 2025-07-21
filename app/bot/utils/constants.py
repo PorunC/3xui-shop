@@ -1,13 +1,28 @@
-# region: Download
-APP_IOS_LINK = "https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-APP_ANDROID_LINK = "https://play.google.com/store/apps/details?id=com.happproxy"
-APP_WINDOWS_LINK = (
-    "https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x86.exe"
-)
+# region: Product Categories
+PRODUCT_CATEGORIES = ["software", "gaming", "subscription", "digital", "education"]
 
-APP_IOS_SCHEME = "happ://add/"
-APP_ANDROID_SCHEME = "happ://add/"
-APP_WINDOWS_SCHEME = "happ://add/"
+# endregion
+
+# region: Order Status
+ORDER_STATUSES = ["pending", "paid", "delivered", "failed", "refunded", "cancelled"]
+
+# endregion
+
+# region: Delivery Types  
+DELIVERY_TYPES = ["digital", "license_key", "account_info", "download_link", "manual", "api"]
+
+# endregion
+
+# region: App Schemes and Links (for download)
+APP_ANDROID_SCHEME = "https://play.google.com/store/apps/details?id=com.example.app"
+APP_ANDROID_LINK = "https://play.google.com/store/apps/details?id=com.example.app"
+APP_IOS_SCHEME = "https://apps.apple.com/app/example-app/id123456789"
+APP_IOS_LINK = "https://apps.apple.com/app/example-app/id123456789"
+APP_WINDOWS_SCHEME = "https://www.microsoft.com/store/apps/example-app"
+APP_WINDOWS_LINK = "https://www.microsoft.com/store/apps/example-app"
+
+# Connection webhook for product setup
+CONNECTION_WEBHOOK = "https://example.com/api/product/setup"
 
 # endregion
 
@@ -17,8 +32,14 @@ PREVIOUS_CALLBACK_KEY = "previous_callback"
 
 INPUT_PROMOCODE_KEY = "input_promocode"
 
-SERVER_NAME_KEY = "server_name"
+PRODUCT_NAME_KEY = "product_name"
+PRODUCT_CATEGORY_KEY = "product_category"
+PRODUCT_PRICE_KEY = "product_price"
+
+# Server management keys (legacy - for admin tools)
 SERVER_HOST_KEY = "server_host"
+SERVER_NAME_KEY = "server_name"
+SERVER_PORT_KEY = "server_port"
 SERVER_MAX_CLIENTS_KEY = "server_max_clients"
 
 NOTIFICATION_CHAT_IDS_KEY = "notification_chat_ids"

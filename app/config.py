@@ -22,7 +22,7 @@ DEFAULT_PLANS_DIR = DEFAULT_DATA_DIR / "plans.json"
 DEFAULT_BOT_HOST = "0.0.0.0"
 DEFAULT_BOT_PORT = 8080
 
-DEFAULT_SHOP_EMAIL = "support@3xui-shop.com"
+DEFAULT_SHOP_EMAIL = "support@digitalstore.com"
 DEFAULT_SHOP_CURRENCY = Currency.RUB.code
 DEFAULT_SHOP_TRIAL_ENABLED = True
 DEFAULT_SHOP_TRIAL_PERIOD = 3
@@ -43,8 +43,11 @@ DEFAULT_REDIS_DB_NAME = "0"
 DEFAULT_REDIS_HOST = "3xui-shop-redis"
 DEFAULT_REDIS_PORT = 6379
 
-DEFAULT_SUBSCRIPTION_PORT = 2096
-DEFAULT_SUBSCRIPTION_PATH = "/user/"
+# Product configuration defaults
+DEFAULT_PRODUCTS_FILE = DEFAULT_DATA_DIR / "products.json"
+DEFAULT_PRODUCT_CATEGORY = "digital"
+DEFAULT_DELIVERY_TIMEOUT = 3600  # 1 hour in seconds
+DEFAULT_PRODUCT_CATEGORIES = ["software", "gaming", "subscription", "digital", "education"]
 
 DEFAULT_LOG_LEVEL = "DEBUG"
 DEFAULT_LOG_FORMAT = "%(asctime)s | %(name)s | %(levelname)s | %(message)s"
@@ -87,12 +90,11 @@ class ShopConfig:
 
 
 @dataclass
-class XUIConfig:
-    USERNAME: str
-    PASSWORD: str
-    TOKEN: str | None
-    SUBSCRIPTION_PORT: int
-    SUBSCRIPTION_PATH: str
+class ProductConfig:
+    PRODUCTS_FILE: str
+    DEFAULT_CATEGORY: str
+    DELIVERY_TIMEOUT: int
+    PRODUCT_CATEGORIES: list[str]
 
 
 @dataclass
@@ -140,7 +142,7 @@ class LoggingConfig:
 class Config:
     bot: BotConfig
     shop: ShopConfig
-    xui: XUIConfig
+    product: ProductConfig
     cryptomus: CryptomusConfig
     database: DatabaseConfig
     redis: RedisConfig
@@ -154,10 +156,6 @@ def load_config() -> Config:
     bot_admins = env.list("BOT_ADMINS", subcast=int, default=[], required=False)
     if not bot_admins:
         logger.warning("BOT_ADMINS list is empty.")
-
-    xui_token = env.str("XUI_TOKEN", default=None)
-    if not xui_token:
-        logger.warning("XUI_TOKEN is not set.")
 
     payment_stars_enabled = env.bool(
         "SHOP_PAYMENT_STARS_ENABLED",
@@ -267,15 +265,11 @@ def load_config() -> Config:
             PAYMENT_STARS_ENABLED=payment_stars_enabled,
             PAYMENT_CRYPTOMUS_ENABLED=payment_cryptomus_enabled,
         ),
-        xui=XUIConfig(
-            USERNAME=env.str("XUI_USERNAME"),
-            PASSWORD=env.str("XUI_PASSWORD"),
-            TOKEN=xui_token,
-            SUBSCRIPTION_PORT=env.int("XUI_SUBSCRIPTION_PORT", default=DEFAULT_SUBSCRIPTION_PORT),
-            SUBSCRIPTION_PATH=env.str(
-                "XUI_SUBSCRIPTION_PATH",
-                default=DEFAULT_SUBSCRIPTION_PATH,
-            ),
+        product=ProductConfig(
+            PRODUCTS_FILE=env.str("PRODUCTS_FILE", default=str(DEFAULT_PRODUCTS_FILE)),
+            DEFAULT_CATEGORY=env.str("DEFAULT_PRODUCT_CATEGORY", default=DEFAULT_PRODUCT_CATEGORY),
+            DELIVERY_TIMEOUT=env.int("DELIVERY_TIMEOUT", default=DEFAULT_DELIVERY_TIMEOUT),
+            PRODUCT_CATEGORIES=DEFAULT_PRODUCT_CATEGORIES,
         ),
         cryptomus=CryptomusConfig(
             API_KEY=env.str("CRYPTOMUS_API_KEY", default=None),

@@ -8,20 +8,21 @@ from app.bot.routers.misc.keyboard import (
     cancel_button,
 )
 from app.bot.utils.navigation import NavAdminTools
-from app.db.models import Server
+# from app.db.models import Server  # Removed - Server model no longer exists
 from app.db.models.invite import Invite
 
 
 def admin_tools_keyboard(is_dev: bool) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
 
-    if is_dev:
-        builder.row(
-            InlineKeyboardButton(
-                text=_("admin_tools:button:server_management"),
-                callback_data=NavAdminTools.SERVER_MANAGEMENT,
-            )
-        )
+    # TODO: Replace server management with product management
+    # if is_dev:
+    #     builder.row(
+    #         InlineKeyboardButton(
+    #             text=_("admin_tools:button:server_management"),
+    #             callback_data=NavAdminTools.SERVER_MANAGEMENT,
+    #         )
+    #     )
 
     builder.row(
         InlineKeyboardButton(
@@ -169,15 +170,16 @@ def servers_keyboard(servers: list) -> InlineKeyboardMarkup:
         )
     )
 
-    server: Server
-    for server in servers:
-        status = "🟢" if server.online else "🔴"
-        builder.row(
-            InlineKeyboardButton(
-                text=f"{status} {server.name}",
-                callback_data=NavAdminTools.SHOW_SERVER + f"_{server.name}",
-            )
-        )
+    # TODO: Replace with product/service management
+    # Server management is no longer available as we don't use VPN servers
+    # for server in servers:
+    #     status = "🟢" if server.online else "🔴"
+    #     builder.row(
+    #         InlineKeyboardButton(
+    #             text=f"{status} {server.name}",
+    #             callback_data=NavAdminTools.SHOW_SERVER + f"_{server.name}",
+    #         )
+    #     )
 
     builder.row(back_button(NavAdminTools.MAIN))
     builder.row(back_to_main_menu_button())

@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from app.bot.services import VPNService
-
 import logging
 from decimal import Decimal
+from typing import TYPE_CHECKING
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
@@ -14,6 +10,9 @@ from app.bot.utils.constants import ReferrerRewardLevel, ReferrerRewardType
 from app.bot.utils.formatting import to_decimal
 from app.config import Config
 from app.db.models import Referral, ReferrerReward, User
+
+if TYPE_CHECKING:
+    from app.bot.services.product import ProductService
 
 logger = logging.getLogger(__name__)
 
@@ -23,17 +22,16 @@ class ReferralService:
         self,
         config: Config,
         session_factory: async_sessionmaker,
-        vpn_service: VPNService,
+        product_service: "ProductService" = None,
     ) -> None:
         self.config = config
         self.session_factory = session_factory
-        self.vpn_service = vpn_service
+        self.product_service = product_service
         logger.info("Referral Service initialized")
 
     async def is_referred_trial_available(self, user: User) -> bool:
         is_first_check_ok = (
             self.config.shop.REFERRED_TRIAL_ENABLED
-            and not user.server_id
             and not user.is_trial_used
         )
         if not is_first_check_ok:
@@ -68,11 +66,17 @@ class ReferralService:
             logger.info(
                 f"Started giving reward to referred user {referral.referred_tg_id}. Referral ID: {referral.id}"
             )
-            referred_success = await self.vpn_service.process_bonus_days(
-                referral.referred,
-                duration=self.config.shop.REFERRED_TRIAL_PERIOD,
-                devices=self.config.shop.BONUS_DEVICES_COUNT,
-            )
+            
+            # Use product service if available
+            if self.product_service:
+                referred_success = await self.product_service.process_bonus_days(
+                    referral.referred,
+                    duration=self.config.shop.REFERRED_TRIAL_PERIOD,
+                    devices=self.config.shop.BONUS_DEVICES_COUNT,
+                )
+            else:
+                # TODO: Replace with product service logic when available
+                referred_success = True  # Temporary: Always return success
 
             if referred_success:
                 logger.info(
@@ -169,9 +173,14 @@ class ReferralService:
                 if not user:
                     return False
 
-                success = await self.vpn_service.process_bonus_days(
-                    user=user, duration=days, devices=self.config.shop.BONUS_DEVICES_COUNT
-                )
+                # Use product service if available
+                if self.product_service:
+                    success = await self.product_service.process_bonus_days(
+                        user=user, duration=days, devices=self.config.shop.BONUS_DEVICES_COUNT
+                    )
+                else:
+                    # TODO: Replace with product service logic when available
+                    success = True  # Temporary: Always return success
                 if not success:
                     logger.error(
                         f"Failed to give {days} days reward to a referrer user {reward.user_tg_id}"

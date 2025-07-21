@@ -6,8 +6,7 @@ if TYPE_CHECKING:
     from app.bot.services import (
         NotificationService,
         PlanService,
-        ServerPoolService,
-        VPNService,
+        ProductService,
         ReferralService,
         SubscriptionService,
         PaymentStatsService,
@@ -19,9 +18,8 @@ from dataclasses import dataclass
 
 @dataclass
 class ServicesContainer:
-    server_pool: ServerPoolService
     plan: PlanService
-    vpn: VPNService
+    product: ProductService
     notification: NotificationService
     referral: ReferralService
     subscription: SubscriptionService

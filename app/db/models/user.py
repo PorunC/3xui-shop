@@ -21,12 +21,9 @@ class User(Base):
     Attributes:
         id (int): Unique primary key for the user.
         tg_id (int): Unique Telegram user ID.
-        vpn_id (str): Unique VPN identifier for the user.
-        server_id (int | None): Foreign key referencing the server.
         first_name (str): First name of the user.
         username (str | None): Telegram username of the user.
         created_at (datetime): Timestamp when the user was created.
-        server (Server | None): Associated server object.
         transactions (list[Transaction]): List of transactions associated with the user.
         activated_promocodes (list[Promocode]): List of promocodes activated by the user.
         referrals_sent (list[Referral]): List of Referrals sent by the user and applied by referred users.
@@ -37,10 +34,6 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     tg_id: Mapped[int] = mapped_column(unique=True, nullable=False)
-    vpn_id: Mapped[str] = mapped_column(String(36), unique=True, nullable=False)
-    server_id: Mapped[int | None] = mapped_column(
-        ForeignKey("servers.id", ondelete="SET NULL"), nullable=True
-    )
     first_name: Mapped[str] = mapped_column(String(length=32), nullable=False)
     username: Mapped[str | None] = mapped_column(String(length=32), nullable=True)
     language_code: Mapped[str] = mapped_column(
@@ -49,7 +42,6 @@ class User(Base):
         default=DEFAULT_LANGUAGE,
     )
     created_at: Mapped[datetime] = mapped_column(default=func.now(), nullable=False)
-    server: Mapped["Server | None"] = relationship("Server", back_populates="users", uselist=False)  # type: ignore
     transactions: Mapped[list["Transaction"]] = relationship("Transaction", back_populates="user")  # type: ignore
     activated_promocodes: Mapped[list["Promocode"]] = relationship(  # type: ignore
         "Promocode", back_populates="activated_user"
@@ -73,8 +65,7 @@ class User(Base):
 
     def __repr__(self) -> str:
         return (
-            f"<User(id={self.id}, tg_id={self.tg_id}, vpn_id='{self.vpn_id}', "
-            f"server_id={self.server_id}, first_name='{self.first_name}', "
+            f"<User(id={self.id}, tg_id={self.tg_id}, first_name='{self.first_name}', "
             f"username='{self.username}', language_code='{self.language_code}', "
             f"created_at={self.created_at}, is_trial_used={self.is_trial_used})>"
         )

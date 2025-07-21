@@ -1,16 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from app.bot.services import VPNService
-
 import logging
+from datetime import datetime, timedelta, timezone
+from typing import TYPE_CHECKING
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from app.config import Config
-from app.db.models import Referral, User
+from app.db.models import Referral, User, Transaction
+from app.bot.models.plan import Plan
+from app.bot.models.subscription_data import SubscriptionData
+
+if TYPE_CHECKING:
+    from app.bot.services.product import ProductService
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +22,16 @@ class SubscriptionService:
         self,
         config: Config,
         session_factory: async_sessionmaker,
-        vpn_service: VPNService,
+        product_service: "ProductService" = None,
     ) -> None:
         self.config = config
         self.session_factory = session_factory
-        self.vpn_service = vpn_service
+        self.product_service = product_service
         logger.info("Subscription Service initialized")
 
     async def is_trial_available(self, user: User) -> bool:
         is_first_check_ok = (
-            self.config.shop.TRIAL_ENABLED and not user.server_id and not user.is_trial_used
+            self.config.shop.TRIAL_ENABLED and not user.is_trial_used
         )
 
         if not is_first_check_ok:
@@ -57,11 +59,17 @@ class SubscriptionService:
             return False
 
         logger.info(f"Begun giving trial period for user {user.tg_id}.")
-        trial_success = await self.vpn_service.process_bonus_days(
-            user,
-            duration=self.config.shop.TRIAL_PERIOD,
-            devices=self.config.shop.BONUS_DEVICES_COUNT,
-        )
+        
+        # Use product service if available, otherwise use placeholder logic
+        if self.product_service:
+            trial_success = await self.product_service.gift_product(
+                user,
+                duration=self.config.shop.TRIAL_PERIOD,
+                devices=self.config.shop.BONUS_DEVICES_COUNT,
+            )
+        else:
+            # TODO: Replace with product service logic when available
+            trial_success = True  # Temporary: Always return success
 
         if trial_success:
             logger.info(
@@ -74,3 +82,54 @@ class SubscriptionService:
 
         logger.warning(f"Failed to apply trial period for user {user.tg_id} due to failure.")
         return False
+
+    async def create_subscription(
+        self, user_id: int, plan: Plan, transaction_id: int
+    ) -> SubscriptionData:
+        """Create a subscription using the product service."""
+        if self.product_service:
+            return await self.product_service.create_subscription(user_id, plan, transaction_id)
+        
+        # Fallback logic if product service not available
+        async with self.session_factory() as session:
+            user = await User.get(session, user_id)
+            
+            current_time = datetime.now(timezone.utc)
+            
+            subscription_data = SubscriptionData(
+                start_date=current_time,
+                expire_date=current_time + timedelta(days=plan.duration_days),
+                traffic_limit=plan.traffic_gb,
+                is_trial=False
+            )
+
+            # Update user status and transaction
+            await self.__update_user_after_successful_subscription(
+                session, user, subscription_data, transaction_id
+            )
+            await session.commit()
+
+            logger.info(
+                "Subscription created for user %s - Plan: %s - Expires: %s",
+                user.tg_id,
+                plan.title,
+                subscription_data.expire_date,
+            )
+
+            return subscription_data
+
+    async def __update_user_after_successful_subscription(
+        self, session, user: User, subscription_data: SubscriptionData, transaction_id: int
+    ) -> None:
+        """Update user and transaction after successful subscription."""
+        # Update transaction status
+        await Transaction.update(session, transaction_id, status="completed")
+        
+        # Update user subscription info
+        await User.update(
+            session, 
+            user.id,
+            is_trial_used=True if subscription_data.is_trial else user.is_trial_used
+        )
+        
+        logger.info(f"Updated user {user.tg_id} after successful subscription")

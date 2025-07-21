@@ -1,0 +1,326 @@
+{
+  "categories": [
+    {
+      "id": "software",
+      "name": "软件许可证",
+      "name_en": "Software Licenses", 
+      "name_ru": "Лицензии ПО",
+      "icon": "💻",
+      "description": "各类软件的正版许可证"
+    },
+    {
+      "id": "gaming", 
+      "name": "游戏相关",
+      "name_en": "Gaming",
+      "name_ru": "Игры",
+      "icon": "🎮",
+      "description": "游戏账号、装备、点卡等"
+    },
+    {
+      "id": "subscription",
+      "name": "订阅服务", 
+      "name_en": "Subscriptions",
+      "name_ru": "Подписки",
+      "icon": "📱",
+      "description": "各类在线服务订阅"
+    },
+    {
+      "id": "digital",
+      "name": "数字内容",
+      "name_en": "Digital Content", 
+      "name_ru": "Цифровой контент",
+      "icon": "📄",
+      "description": "电子书、音乐、视频等数字内容"
+    },
+    {
+      "id": "education",
+      "name": "教育培训",
+      "name_en": "Education",
+      "name_ru": "Образование", 
+      "icon": "📚",
+      "description": "在线课程、培训资料等"
+    }
+  ],
+
+  "products": [
+    {
+      "id": 1,
+      "name": "Office 365 商业版",
+      "name_en": "Office 365 Business",
+      "name_ru": "Office 365 Бизнес",
+      "description": "Microsoft Office 365 商业版年度许可证，包含Word、Excel、PowerPoint等全套办公软件",
+      "category": "software",
+      "prices": {
+        "RUB": {
+          "30": 500,
+          "90": 1400,
+          "180": 2600,
+          "365": 4800
+        },
+        "USD": {
+          "30": 5,
+          "90": 14,
+          "180": 26,
+          "365": 48
+        },
+        "XTR": {
+          "30": 400,
+          "90": 1100,
+          "180": 2000,
+          "365": 3600
+        }
+      },
+      "stock": -1,
+      "is_active": true,
+      "delivery_type": "license_key",
+      "delivery_config": {
+        "template": "🔑 <b>您的 Office 365 许可证：</b>\n\n<pre>{license_key}</pre>\n\n<b>激活说明：</b>\n1. 访问 office.com/setup\n2. 登录您的 Microsoft 账户\n3. 输入上述许可证密钥\n4. 按照指示完成激活\n\n<b>有效期：</b> {expiry_date}",
+        "key_format": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+      },
+      "features": [
+        "Word、Excel、PowerPoint 完整版",
+        "1TB OneDrive 云存储",
+        "支持 PC、Mac、手机、平板",
+        "24/7 技术支持"
+      ]
+    },
+    
+    {
+      "id": 2,
+      "name": "Adobe Creative Cloud",
+      "name_en": "Adobe Creative Cloud",
+      "name_ru": "Adobe Creative Cloud", 
+      "description": "Adobe 创意套件包含 Photoshop、Illustrator、After Effects 等专业创意软件",
+      "category": "software",
+      "prices": {
+        "RUB": {
+          "30": 2000,
+          "90": 5500,
+          "180": 10000,
+          "365": 18000
+        },
+        "USD": {
+          "30": 20,
+          "90": 55,
+          "180": 100,
+          "365": 180
+        },
+        "XTR": {
+          "30": 1600,
+          "90": 4400,
+          "180": 8000,
+          "365": 14400
+        }
+      },
+      "stock": 50,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "template": "🎨 <b>您的 Adobe Creative Cloud 账户：</b>\n\n<b>邮箱：</b> <pre>{username}</pre>\n<b>密码：</b> <pre>{password}</pre>\n\n<b>登录地址：</b> https://account.adobe.com\n\n<b>包含软件：</b>\n• Photoshop CC\n• Illustrator CC\n• After Effects CC\n• Premiere Pro CC\n• InDesign CC\n• 以及更多...\n\n<b>有效期：</b> {expiry_date}"
+      },
+      "features": [
+        "20+ 专业创意应用",
+        "100GB 云存储",
+        "Adobe Fonts 字体库",
+        "Adobe Stock 模板"
+      ]
+    },
+
+    {
+      "id": 3,
+      "name": "Steam 随机游戏",
+      "name_en": "Steam Random Game",
+      "name_ru": "Случайная игра Steam",
+      "description": "Steam 平台随机优质游戏，价值不低于购买金额",
+      "category": "gaming",
+      "prices": {
+        "RUB": {
+          "1": 200,
+          "3": 500,
+          "5": 800
+        },
+        "USD": {
+          "1": 2,
+          "3": 5,
+          "5": 8
+        },
+        "XTR": {
+          "1": 160,
+          "3": 400,
+          "5": 640
+        }
+      },
+      "stock": 1000,
+      "is_active": true,
+      "delivery_type": "license_key",
+      "delivery_config": {
+        "template": "🎮 <b>您的 Steam 游戏密钥：</b>\\n\\n<b>游戏：</b> {{game_title}}\\n<b>密钥：</b> <pre>{{license_key}}</pre>\\n\\n<b>激活方式：</b>\\n1. 打开 Steam 客户端\\n2. 点击左下角\"添加游戏\"\\n3. 选择\"在 Steam 上激活产品\"\\n4. 输入上述密钥\\n\\n<b>注意：</b>密钥仅可使用一次，请妥善保存！",
+        "key_format": "XXXXX-XXXXX-XXXXX"
+      },
+      "features": [
+        "正版 Steam 游戏",
+        "随机分配优质游戏",
+        "价值保证不低于购买金额",
+        "永久拥有"
+      ]
+    },
+
+    {
+      "id": 4,
+      "name": "Netflix 高级订阅",
+      "name_en": "Netflix Premium",
+      "name_ru": "Netflix Премиум",
+      "description": "Netflix 高级会员，支持4K画质，最多4台设备同时观看",
+      "category": "subscription", 
+      "prices": {
+        "RUB": {
+          "30": 800,
+          "90": 2200,
+          "180": 4000
+        },
+        "USD": {
+          "30": 8,
+          "90": 22,
+          "180": 40
+        },
+        "XTR": {
+          "30": 640,
+          "90": 1760,
+          "180": 3200
+        }
+      },
+      "stock": 20,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "template": "📺 <b>您的 Netflix 高级账户：</b>\n\n<b>邮箱：</b> <pre>{username}</pre>\n<b>密码：</b> <pre>{password}</pre>\n\n<b>登录地址：</b> https://netflix.com\n\n<b>账户特权：</b>\n• 4K 超高清画质\n• 最多4台设备同时观看\n• 全球内容库访问\n• 无广告体验\n\n<b>有效期：</b> {expiry_date}\n\n<b>注意：</b>请勿修改账户信息，违规使用将被封号！"
+      },
+      "features": [
+        "4K 超高清画质",
+        "4台设备同时观看",
+        "全球内容库",
+        "无广告体验"
+      ]
+    },
+
+    {
+      "id": 5,
+      "name": "Spotify 音乐会员",
+      "name_en": "Spotify Premium",
+      "name_ru": "Spotify Премиум", 
+      "description": "Spotify 高级会员，无限音乐畅听，无广告，支持离线下载",
+      "category": "subscription",
+      "prices": {
+        "RUB": {
+          "30": 300,
+          "90": 800,
+          "180": 1500,
+          "365": 2800
+        },
+        "USD": {
+          "30": 3,
+          "90": 8,
+          "180": 15,
+          "365": 28
+        },
+        "XTR": {
+          "30": 240,
+          "90": 640,
+          "180": 1200,
+          "365": 2240
+        }
+      },
+      "stock": 100,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "template": "🎵 <b>您的 Spotify Premium 账户：</b>\n\n<b>邮箱：</b> <pre>{username}</pre>\n<b>密码：</b> <pre>{password}</pre>\n\n<b>登录地址：</b> https://spotify.com\n\n<b>会员特权：</b>\n• 无限制音乐播放\n• 无广告打扰\n• 高品质音频\n• 离线下载\n• 跨设备同步\n\n<b>有效期：</b> {expiry_date}"
+      },
+      "features": [
+        "7500万+音乐曲库",
+        "无广告播放",
+        "320kbps 高品质",
+        "离线下载"
+      ]
+    },
+
+    {
+      "id": 6,
+      "name": "编程入门课程包",
+      "name_en": "Programming Starter Pack",
+      "name_ru": "Курс программирования",
+      "description": "零基础编程入门课程，包含Python、JavaScript、HTML/CSS等热门语言",
+      "category": "education",
+      "prices": {
+        "RUB": {
+          "365": 3000
+        },
+        "USD": {
+          "365": 30
+        },
+        "XTR": {
+          "365": 2400
+        }
+      },
+      "stock": -1,
+      "is_active": true,
+      "delivery_type": "download_link",
+      "delivery_config": {
+        "template": "📚 <b>您的编程课程包：</b>\n\n<b>下载链接：</b> {download_url}\n\n<b>课程内容：</b>\n• Python 基础到进阶（40课时）\n• JavaScript Web开发（35课时）\n• HTML/CSS 前端基础（25课时）\n• 数据库基础（15课时）\n• 实战项目指导（20课时）\n\n<b>总时长：</b>135课时\n<b>有效期：</b>永久访问\n<b>链接有效期：</b>7天\n\n<b>配套资料：</b>\n• 源码文件\n• 学习笔记\n• 实战项目模板\n• 学习路线图"
+      },
+      "features": [
+        "135课时精品内容",
+        "5种热门编程语言",
+        "实战项目指导",
+        "永久学习权限"
+      ]
+    },
+
+    {
+      "id": 7,
+      "name": "电子书合集",
+      "name_en": "E-book Collection",
+      "name_ru": "Коллекция электронных книг",
+      "description": "精选技术、商业、个人成长类电子书合集，超过1000本优质图书",
+      "category": "digital",
+      "prices": {
+        "RUB": {
+          "365": 1000
+        },
+        "USD": {
+          "365": 10
+        },
+        "XTR": {
+          "365": 800
+        }
+      },
+      "stock": -1,
+      "is_active": true,
+      "delivery_type": "download_link",
+      "delivery_config": {
+        "template": "📖 <b>您的电子书合集：</b>\n\n<b>下载链接：</b> {download_url}\n\n<b>包含内容：</b>\n• 编程技术类：300+本\n• 商业管理类：250+本\n• 个人成长类：200+本\n• 设计创意类：150+本\n• 其他精选：100+本\n\n<b>格式支持：</b>PDF、EPUB、MOBI\n<b>总容量：</b>约15GB\n<b>链接有效期：</b>7天\n\n<b>特色：</b>\n• 精心筛选优质内容\n• 多种阅读格式\n• 定期更新补充\n• 分类整理方便查找"
+      },
+      "features": [
+        "1000+优质电子书",
+        "多种文件格式",
+        "分类整理",
+        "永久拥有"
+      ]
+    }
+  ],
+
+  "delivery_templates": {
+    "license_key": "🔑 <b>您的许可证密钥：</b>\n\n<pre>{license_key}</pre>\n\n{additional_info}",
+    "account_info": "👤 <b>您的账户信息：</b>\n\n<b>用户名：</b> <pre>{username}</pre>\n<b>密码：</b> <pre>{password}</pre>\n\n{additional_info}",
+    "download_link": "📥 <b>您的下载链接：</b>\n\n{download_url}\n\n<b>有效期：</b> {expires_in}\n\n{additional_info}"
+  },
+
+  "durations": [1, 30, 90, 180, 365],
+  
+  "currencies": ["RUB", "USD", "XTR"],
+  
+  "stock_alerts": {
+    "low_stock_threshold": 10,
+    "out_of_stock_notification": true
+  }
+}
