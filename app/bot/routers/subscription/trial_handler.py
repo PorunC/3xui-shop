@@ -28,13 +28,8 @@ async def callback_get_trial(
     logger.info(f"User {user.tg_id} triggered getting non-referral trial period.")
     await state.update_data({PREVIOUS_CALLBACK_KEY: NavMain.MAIN_MENU})
 
-    server = await services.server_pool.get_available_server()
-
-    if not server:
-        await services.notification.show_popup(
-            callback=callback, text=_("subscription:popup:no_available_servers")
-        )
-        return
+    # For digital products, trials are always "available" - no server check needed
+    logger.info(f"Processing digital product trial for user {user.tg_id}")
 
     is_trial_available = await services.subscription.is_trial_available(user=user)
 

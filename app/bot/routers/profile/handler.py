@@ -52,15 +52,15 @@ async def callback_profile(
     logger.info(f"User {user.tg_id} opened profile page.")
     await state.update_data({PREVIOUS_CALLBACK_KEY: NavProfile.MAIN})
 
+    # Get subscription info from ProductService
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    # Create client_data equivalent from product service
     client_data = None
-    if user.server_id:
-        client_data = await services.vpn.get_client_data(user)
-        if not client_data:
-            await services.notification.show_popup(
-                callback=callback,
-                text=_("subscription:popup:error_fetching_data"),
-            )
-            return
+    if subscription_info and subscription_info.get('status') == 'active':
+        client_data = type('ClientData', (), {
+            'has_subscription_expired': subscription_info['status'] != 'active',
+        })()
 
     reply_markup = (
         profile_keyboard()
@@ -80,7 +80,20 @@ async def callback_show_key(
     services: ServicesContainer,
 ) -> None:
     logger.info(f"User {user.tg_id} looked key.")
-    key = await services.vpn.get_key(user)
+    
+    # Get product access key from subscription info
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    if subscription_info and subscription_info.get('status') == 'active':
+        # Get delivery info which contains the access key/license
+        delivery_info = subscription_info.get('delivery_info', {})
+        key = (delivery_info.get('license_key') or 
+               delivery_info.get('access_token') or 
+               delivery_info.get('api_key') or 
+               f"DIGITAL-{user.tg_id}")  # Fallback key format
+    else:
+        key = "No active subscription"
+    
     key_text = _("profile:message:key")
     message = await callback.message.answer(key_text.format(key=key, seconds_text=_("10 seconds")))
 

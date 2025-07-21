@@ -134,14 +134,8 @@ async def callback_get_referred_trial(
 ) -> None:
     logger.info(f"User {user.tg_id} triggered getting bonus days.")
 
-    server = await services.server_pool.get_available_server()
-
-    if not server:
-        await services.notification.show_popup(
-            callback=callback,
-            text=_("referral:popup:no_available_servers"),
-        )
-        return
+    # For digital products, referral rewards are always "available" - no server check needed
+    logger.info(f"Processing digital product referral reward for user {user.tg_id}")
 
     is_referred_trial_available = await services.referral.is_referred_trial_available(user=user)
 

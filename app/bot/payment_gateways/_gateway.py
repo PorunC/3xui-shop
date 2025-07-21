@@ -107,10 +107,11 @@ class PaymentGateway(ABC):
             )
 
             if data.is_extend:
-                await self.services.vpn.extend_subscription(
+                await self.services.product.extend_user_subscription(
                     user=user,
                     devices=data.devices,
                     duration=data.duration,
+                    data=data,
                 )
                 logger.info(f"Subscription extended for user {user.tg_id}")
                 await self.services.notification.notify_extend_success(

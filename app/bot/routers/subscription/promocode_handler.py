@@ -44,19 +44,24 @@ async def handle_promocode_input(
     input_promocode = message.text.strip()
     logger.info(f"User {user.tg_id} entered promocode: {input_promocode} for activating.")
 
-    server = await services.server_pool.get_available_server()
-
-    if not server:
-        await services.notification.notify_by_message(
-            message=message,
-            text=_("promocode:ntf:no_available_servers"),
-            duration=5,
-        )
-        return
+    # For digital products, promocodes are always "available" - no server check needed
+    logger.info(f"Processing digital product promocode for user {user.tg_id}")
 
     promocode = await Promocode.get(session=session, code=input_promocode)
     if promocode and not promocode.is_activated:
-        success = await services.vpn.activate_promocode(user=user, promocode=promocode)
+        # Use product service to handle promocode activation
+        success = await services.product.process_bonus_days(
+            user=user, 
+            duration=promocode.duration,
+            devices=1  # Default for digital products
+        )
+        
+        if success:
+            # Mark promocode as activated
+            promocode.is_activated = True
+            promocode.activated_user = user
+            await session.commit()
+            
         main_message_id = await state.get_value(MAIN_MESSAGE_ID_KEY)
         if success:
             await message.bot.edit_message_text(

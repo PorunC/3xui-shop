@@ -85,7 +85,18 @@ async def callback_platform(
     config: Config,
 ) -> None:
     logger.info(f"User {user.tg_id} selected platform: {callback.data}")
-    key = await services.vpn.get_key(user)
+    
+    # Get product access key from subscription info  
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    if subscription_info and subscription_info.get('status') == 'active':
+        delivery_info = subscription_info.get('delivery_info', {})
+        key = (delivery_info.get('license_key') or 
+               delivery_info.get('access_token') or 
+               delivery_info.get('download_url') or 
+               f"DIGITAL-{user.tg_id}")
+    else:
+        key = "No active subscription"
 
     match callback.data:
         case NavDownload.PLATFORM_IOS:

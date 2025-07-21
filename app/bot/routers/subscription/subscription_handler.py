@@ -59,15 +59,18 @@ async def callback_subscription(
     logger.info(f"User {user.tg_id} opened subscription page.")
     await state.set_state(None)
 
+    # Get user's current subscription status using ProductService
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    # Create client_data equivalent from product service
     client_data = None
-    if user.server_id:
-        client_data = await services.vpn.get_client_data(user)
-        if not client_data:
-            await services.notification.show_popup(
-                callback=callback,
-                text=_("subscription:popup:error_fetching_data"),
-            )
-            return
+    if subscription_info and subscription_info.get('status') == 'active':
+        # Mock ClientData structure for compatibility
+        client_data = type('ClientData', (), {
+            'has_subscription_expired': subscription_info['status'] != 'active',
+            'max_devices': 1,  # Default devices for digital products
+            'expiry_time': subscription_info.get('expires_at', 'Unknown'),
+        })()
 
     callback_data = SubscriptionData(state=NavSubscription.PROCESS, user_id=user.tg_id)
     await show_subscription(callback=callback, client_data=client_data, callback_data=callback_data)
@@ -82,9 +85,16 @@ async def callback_subscription_extend(
     services: ServicesContainer,
 ) -> None:
     logger.info(f"User {user.tg_id} started extend subscription.")
-    client = await services.vpn.is_client_exists(user)
-
-    current_devices = await services.vpn.get_limit_ip(user=user, client=client)
+    
+    # Get current subscription info from ProductService
+    subscription_info = await services.product.get_user_subscription_info(user)
+    
+    # Default to 1 device for digital products
+    current_devices = 1
+    if subscription_info and subscription_info.get('status') == 'active':
+        # For digital products, we typically use 1 device
+        current_devices = 1
+    
     if not services.plan.get_plan(current_devices):
         await services.notification.show_popup(
             callback=callback,
@@ -130,15 +140,10 @@ async def callback_subscription_process(
     services: ServicesContainer,
 ) -> None:
     logger.info(f"User {user.tg_id} started subscription process.")
-    server = await services.server_pool.get_available_server()
-
-    if not server:
-        await services.notification.show_popup(
-            callback=callback,
-            text=_("subscription:popup:no_available_servers"),
-            cache_time=120,
-        )
-        return
+    
+    # For digital products, we don't need server availability check
+    # Digital products are always "available"
+    logger.info(f"Processing digital product subscription for user {user.tg_id}")
 
     callback_data.state = NavSubscription.DEVICES
     await callback.message.edit_text(
