@@ -6,7 +6,7 @@ ENV PYTHONPATH=/
 RUN apt-get update && apt-get install -y gettext && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency files
-COPY pyproject.toml poetry.lock* /
+COPY pyproject.toml /
 
 # Install Poetry and dependencies
 RUN pip install poetry && \
