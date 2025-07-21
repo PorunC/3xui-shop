@@ -1,5 +1,4 @@
 import logging
-import uuid
 from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware
@@ -36,7 +35,6 @@ class DBSessionMiddleware(BaseMiddleware):
                     user = await User.create(
                         session=session,
                         tg_id=tg_user.id,
-                        vpn_id=str(uuid.uuid4()),
                         first_name=tg_user.first_name,
                         username=tg_user.username,
                         language_code=tg_user.language_code,
