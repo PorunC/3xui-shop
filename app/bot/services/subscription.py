@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Optional
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
@@ -133,3 +133,15 @@ class SubscriptionService:
         )
         
         logger.info(f"Updated user {user.tg_id} after successful subscription")
+
+    async def get_user_subscription_status(self, user: User) -> Optional[Dict]:
+        """Get user's current subscription status using ProductService."""
+        if self.product_service:
+            return await self.product_service.get_user_subscription_info(user)
+        else:
+            # Fallback if no product service
+            return {
+                'user_id': user.tg_id,
+                'status': 'unknown',
+                'message': 'Product service not available'
+            }

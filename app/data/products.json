@@ -1,0 +1,208 @@
+{
+  "products": [
+    {
+      "id": "software-office-365",
+      "name": "Microsoft Office 365 Personal",
+      "category": "software",
+      "description": "Complete Office suite with Word, Excel, PowerPoint, Outlook, and more",
+      "price": {
+        "amount": 999,
+        "currency": "RUB"
+      },
+      "duration_days": 365,
+      "stock": 50,
+      "is_active": true,
+      "delivery_type": "license_key",
+      "delivery_config": {
+        "template": "🔑 <b>Your Microsoft Office 365 License:</b>\n\n<b>Product:</b> {product_name}\n<b>License Key:</b> <pre>{license_key}</pre>\n\n<b>Activation Instructions:</b>\n1. Go to office.com/setup\n2. Sign in with your Microsoft account\n3. Enter the product key above\n4. Follow the installation instructions\n\n<b>Note:</b> License is valid for 1 year and can only be used once.",
+        "key_format": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+      },
+      "features": [
+        "1 Year License",
+        "Word, Excel, PowerPoint included",
+        "1TB OneDrive storage",
+        "Works on Windows and Mac",
+        "Mobile apps included"
+      ]
+    },
+    {
+      "id": "gaming-steam-key-random",
+      "name": "Premium Steam Game (Random)",
+      "category": "gaming",
+      "description": "Random premium Steam game key worth at least the purchase amount",
+      "price": {
+        "amount": 299,
+        "currency": "RUB"
+      },
+      "duration_days": 0,
+      "stock": 100,
+      "is_active": true,
+      "delivery_type": "license_key",
+      "delivery_config": {
+        "template": "🎮 <b>Your Steam Game Key:</b>\n\n<b>Game:</b> {game_title}\n<b>Key:</b> <pre>{license_key}</pre>\n\n<b>Activation Instructions:</b>\n1. Open Steam client\n2. Click 'Add a Game' in bottom left\n3. Select 'Activate a Product on Steam'\n4. Enter the key above\n\n<b>Note:</b> Key can only be used once, please save it safely!",
+        "key_format": "XXXXX-XXXXX-XXXXX"
+      },
+      "features": [
+        "Genuine Steam Game",
+        "Random premium title",
+        "Value guaranteed not less than purchase amount",
+        "Permanent ownership"
+      ]
+    },
+    {
+      "id": "subscription-netflix-premium",
+      "name": "Netflix Premium Account",
+      "category": "subscription",
+      "description": "Netflix Premium subscription with 4K streaming and 4 simultaneous screens",
+      "price": {
+        "amount": 599,
+        "currency": "RUB"
+      },
+      "duration_days": 30,
+      "stock": 20,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "login_url": "https://netflix.com/login",
+        "template": "📺 <b>Your Netflix Premium Account:</b>\n\n<b>Login URL:</b> {login_url}\n<b>Email:</b> {account_username}\n<b>Password:</b> <pre>{account_password}</pre>\n\n<b>Features:</b>\n• 4K Ultra HD streaming\n• 4 simultaneous screens\n• Download on mobile devices\n• No ads\n\n<b>Valid until:</b> {expires_at}\n\n<b>Important:</b> Do not change account settings or password!"
+      },
+      "features": [
+        "30 Days Access",
+        "4K Ultra HD quality",
+        "4 simultaneous screens",
+        "Mobile downloads",
+        "No advertisements"
+      ]
+    },
+    {
+      "id": "digital-ebook-bundle",
+      "name": "Programming eBooks Bundle",
+      "category": "digital",
+      "description": "Collection of 50+ programming and tech books in PDF format",
+      "price": {
+        "amount": 199,
+        "currency": "RUB"
+      },
+      "duration_days": 0,
+      "stock": 999,
+      "is_active": true,
+      "delivery_type": "download_link",
+      "delivery_config": {
+        "template": "📚 <b>Your Programming eBooks Bundle:</b>\n\n<b>Download Link:</b> {download_url}\n<b>Access expires:</b> {download_expires}\n\n<b>Bundle includes:</b>\n• Python, JavaScript, Java books\n• Web development guides\n• Data science resources\n• System design books\n• And 40+ more titles!\n\n<b>Format:</b> PDF files\n<b>Total size:</b> ~2.5GB\n\n<b>Note:</b> Download link expires in 24 hours!"
+      },
+      "features": [
+        "50+ Programming books",
+        "Multiple languages covered",
+        "PDF format",
+        "Lifetime access after download",
+        "Regular updates"
+      ]
+    },
+    {
+      "id": "education-udemy-course",
+      "name": "Complete Web Development Course",
+      "category": "education",
+      "description": "Full-stack web development course from beginner to advanced",
+      "price": {
+        "amount": 799,
+        "currency": "RUB"
+      },
+      "duration_days": 365,
+      "stock": 30,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "login_url": "https://udemy.com",
+        "template": "🎓 <b>Your Web Development Course:</b>\n\n<b>Platform:</b> Udemy\n<b>Course:</b> Complete Web Development Bootcamp\n<b>Login:</b> {account_username}\n<b>Password:</b> <pre>{account_password}</pre>\n\n<b>Course includes:</b>\n• HTML, CSS, JavaScript\n• React, Node.js, MongoDB\n• 40+ hours of video\n• Projects and exercises\n• Certificate upon completion\n\n<b>Access valid until:</b> {expires_at}"
+      },
+      "features": [
+        "40+ hours of content",
+        "Frontend & Backend covered",
+        "Real projects included",
+        "Certificate provided",
+        "1 year access"
+      ]
+    },
+    {
+      "id": "software-adobe-photoshop",
+      "name": "Adobe Photoshop CC 2024",
+      "category": "software",
+      "description": "Latest version of Adobe Photoshop with all professional features",
+      "price": {
+        "amount": 1299,
+        "currency": "RUB"
+      },
+      "duration_days": 180,
+      "stock": 25,
+      "is_active": true,
+      "delivery_type": "license_key",
+      "delivery_config": {
+        "template": "🎨 <b>Your Adobe Photoshop License:</b>\n\n<b>Product:</b> Adobe Photoshop CC 2024\n<b>License Key:</b> <pre>{license_key}</pre>\n\n<b>Installation:</b>\n1. Download from adobe.com/photoshop\n2. Install the application\n3. Enter license key when prompted\n4. Sign in with Adobe account\n\n<b>Valid for:</b> 6 months\n<b>Platform:</b> Windows/Mac",
+        "key_format": "XXXX-XXXX-XXXX-XXXX"
+      },
+      "features": [
+        "6 months license",
+        "Latest CC 2024 version",
+        "AI-powered tools",
+        "Cloud sync included",
+        "Mobile app access"
+      ]
+    },
+    {
+      "id": "gaming-minecraft-premium",
+      "name": "Minecraft Java Edition",
+      "category": "gaming",
+      "description": "Official Minecraft Java Edition with full multiplayer access",
+      "price": {
+        "amount": 449,
+        "currency": "RUB"
+      },
+      "duration_days": 0,
+      "stock": 75,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "login_url": "https://minecraft.net/login",
+        "template": "⛏️ <b>Your Minecraft Account:</b>\n\n<b>Username:</b> {account_username}\n<b>Password:</b> <pre>{account_password}</pre>\n<b>Login URL:</b> {login_url}\n\n<b>Features:</b>\n• Full Java Edition access\n• Multiplayer servers\n• Mods support\n• Skin customization\n• Realms compatible\n\n<b>Important:</b> Change password after first login for security!"
+      },
+      "features": [
+        "Java Edition",
+        "Lifetime ownership",
+        "Multiplayer access",
+        "Mods support",
+        "Cross-platform play"
+      ]
+    },
+    {
+      "id": "subscription-spotify-premium",
+      "name": "Spotify Premium",
+      "category": "subscription",
+      "description": "Spotify Premium with ad-free music and offline downloads",
+      "price": {
+        "amount": 399,
+        "currency": "RUB"
+      },
+      "duration_days": 30,
+      "stock": 40,
+      "is_active": true,
+      "delivery_type": "account_info",
+      "delivery_config": {
+        "login_url": "https://spotify.com/login",
+        "template": "🎵 <b>Your Spotify Premium:</b>\n\n<b>Email:</b> {account_username}\n<b>Password:</b> <pre>{account_password}</pre>\n\n<b>Premium Features:</b>\n• No advertisements\n• Offline downloads\n• High quality audio\n• Unlimited skips\n• Play any song\n\n<b>Valid until:</b> {expires_at}\n\n<b>Note:</b> Do not change account email or password!"
+      },
+      "features": [
+        "30 days premium access",
+        "Ad-free listening",
+        "Offline downloads",
+        "High quality audio",
+        "Unlimited skips"
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2025-07-21",
+    "total_products": 8,
+    "categories": ["software", "gaming", "subscription", "digital", "education"]
+  }
+}

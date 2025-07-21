@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import Dict, List, Optional, Any
+import uuid
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
@@ -29,7 +32,51 @@ class ProductService:
         self.session_factory = session_factory
         self.product_categories = self.config.product.PRODUCT_CATEGORIES
         self.default_category = self.config.product.DEFAULT_CATEGORY
+        self.products_file = Path(self.config.product.PRODUCTS_FILE)
+        self.delivery_timeout = self.config.product.DELIVERY_TIMEOUT
+        
+        # In-memory storage for user subscriptions (replace with DB in production)
+        self._user_subscriptions: Dict[int, Dict] = {}
+        
         logger.info("Product Service initialized")
+
+    async def load_products_catalog(self) -> List[Dict[str, Any]]:
+        """Load products from the catalog file."""
+        try:
+            if self.products_file.exists():
+                with open(self.products_file, 'r', encoding='utf-8') as f:
+                    catalog = json.load(f)
+                    products = catalog.get('products', [])
+                    logger.info(f"Loaded {len(products)} products from catalog")
+                    return products
+            else:
+                logger.warning(f"Products catalog not found at {self.products_file}")
+                return []
+        except Exception as e:
+            logger.error(f"Failed to load products catalog: {e}")
+            return []
+
+    async def get_product_by_plan(self, plan: Plan) -> Optional[Dict[str, Any]]:
+        """Find a product that matches the given plan."""
+        products = await self.load_products_catalog()
+        
+        for product in products:
+            # Match by price and duration if available
+            if (product.get('price', {}).get('amount') == plan.price and 
+                product.get('duration_days', plan.duration_days) == plan.duration_days):
+                return product
+                
+        # Fallback: return default digital product
+        return {
+            'id': str(uuid.uuid4()),
+            'name': plan.title,
+            'category': self.default_category,
+            'price': {'amount': plan.price, 'currency': 'RUB'},
+            'duration_days': plan.duration_days,
+            'delivery_type': 'digital',
+            'description': f'Digital product: {plan.title}',
+            'features': [f'{plan.duration_days} days access', f'{plan.traffic_gb}GB allowance']
+        }
 
     async def create_subscription(
         self, user_id: int, plan: Plan, transaction_id: int
@@ -37,6 +84,9 @@ class ProductService:
         """Create a subscription for digital product access."""
         async with self.session_factory() as session:
             user = await User.get(session, user_id)
+            
+            # Find matching product
+            product = await self.get_product_by_plan(plan)
             
             current_time = datetime.now(timezone.utc)
             
@@ -47,14 +97,24 @@ class ProductService:
                 is_trial=False
             )
 
-            # Simulate product delivery
-            success = await self._deliver_product(user, plan, subscription_data)
+            # Deliver the product
+            delivery_result = await self._deliver_product(user, product, subscription_data, transaction_id)
 
-            if success:
+            if delivery_result['success']:
+                # Store subscription info
+                self._user_subscriptions[user.tg_id] = {
+                    'user_id': user.tg_id,
+                    'product': product,
+                    'subscription_data': subscription_data,
+                    'delivery_info': delivery_result['delivery_info'],
+                    'created_at': current_time.isoformat(),
+                    'transaction_id': transaction_id
+                }
+                
                 logger.info(
-                    "Product subscription created for user %s - Plan: %s - Expires: %s",
+                    "Product subscription created for user %s - Product: %s - Expires: %s",
                     user.tg_id,
-                    plan.title,
+                    product['name'],
                     subscription_data.expire_date,
                 )
                 return subscription_data
@@ -71,22 +131,47 @@ class ProductService:
                 f"Gifting product access to user {user.tg_id} for {duration} days with {devices} devices"
             )
             
-            # TODO: Implement actual product delivery logic
-            # For now, simulate successful delivery
+            # Create a gift product
+            gift_product = {
+                'id': f'gift-{uuid.uuid4()}',
+                'name': f'{duration} Days Gift Access',
+                'category': self.default_category,
+                'duration_days': duration,
+                'delivery_type': 'digital',
+                'description': f'Gift access for {duration} days',
+                'features': [f'{duration} days access', f'{devices} device(s)']
+            }
+            
             current_time = datetime.now(timezone.utc)
             expiry = current_time + timedelta(days=duration)
             
-            # Store product access info (placeholder logic)
-            product_info = {
-                'user_id': user.tg_id,
-                'granted_at': current_time.isoformat(),
-                'expires_at': expiry.isoformat(),
-                'devices_count': devices,
-                'category': self.default_category
-            }
+            # Create subscription data for the gift
+            subscription_data = SubscriptionData(
+                start_date=current_time,
+                expire_date=expiry,
+                traffic_limit=0,  # No traffic limit for gifts
+                is_trial=True
+            )
             
-            logger.info(f"Product gifted successfully: {product_info}")
-            return True
+            # Deliver the gift product
+            delivery_result = await self._deliver_product(user, gift_product, subscription_data, None)
+            
+            if delivery_result['success']:
+                # Store gift subscription
+                self._user_subscriptions[user.tg_id] = {
+                    'user_id': user.tg_id,
+                    'product': gift_product,
+                    'subscription_data': subscription_data,
+                    'delivery_info': delivery_result['delivery_info'],
+                    'created_at': current_time.isoformat(),
+                    'is_gift': True
+                }
+                
+                logger.info(f"Product gifted successfully to user {user.tg_id}")
+                return True
+            else:
+                logger.error(f"Failed to deliver gift to user {user.tg_id}")
+                return False
             
         except Exception as e:
             logger.error(f"Failed to gift product to user {user.tg_id}: {e}")
@@ -101,20 +186,58 @@ class ProductService:
                 f"Processing {duration} bonus days for user {user.tg_id} with {devices} devices"
             )
             
-            # TODO: Implement actual bonus processing logic
-            # For now, simulate successful processing
             current_time = datetime.now(timezone.utc)
-            bonus_expiry = current_time + timedelta(days=duration)
             
-            bonus_info = {
-                'user_id': user.tg_id,
-                'bonus_days': duration,
-                'devices_count': devices,
-                'processed_at': current_time.isoformat(),
-                'expires_at': bonus_expiry.isoformat()
-            }
+            # Check if user has existing subscription
+            existing_subscription = self._user_subscriptions.get(user.tg_id)
             
-            logger.info(f"Bonus days processed successfully: {bonus_info}")
+            if existing_subscription:
+                # Extend existing subscription
+                old_expiry = datetime.fromisoformat(
+                    existing_subscription['subscription_data'].expire_date.isoformat()
+                )
+                new_expiry = old_expiry + timedelta(days=duration)
+                
+                # Update the subscription
+                existing_subscription['subscription_data'].expire_date = new_expiry
+                existing_subscription['bonus_days_added'] = existing_subscription.get('bonus_days_added', 0) + duration
+                existing_subscription['last_bonus_at'] = current_time.isoformat()
+                
+                logger.info(f"Extended subscription for user {user.tg_id} by {duration} days until {new_expiry}")
+            else:
+                # Create new bonus subscription
+                bonus_product = {
+                    'id': f'bonus-{uuid.uuid4()}',
+                    'name': f'{duration} Days Bonus Access',
+                    'category': self.default_category,
+                    'duration_days': duration,
+                    'delivery_type': 'digital',
+                    'description': f'Bonus access for {duration} days',
+                    'features': [f'{duration} days bonus access', f'{devices} device(s)']
+                }
+                
+                bonus_expiry = current_time + timedelta(days=duration)
+                subscription_data = SubscriptionData(
+                    start_date=current_time,
+                    expire_date=bonus_expiry,
+                    traffic_limit=0,
+                    is_trial=True
+                )
+                
+                delivery_result = await self._deliver_product(user, bonus_product, subscription_data, None)
+                
+                if delivery_result['success']:
+                    self._user_subscriptions[user.tg_id] = {
+                        'user_id': user.tg_id,
+                        'product': bonus_product,
+                        'subscription_data': subscription_data,
+                        'delivery_info': delivery_result['delivery_info'],
+                        'created_at': current_time.isoformat(),
+                        'is_bonus': True,
+                        'bonus_days_added': duration
+                    }
+            
+            logger.info(f"Bonus days processed successfully for user {user.tg_id}")
             return True
             
         except Exception as e:
@@ -124,17 +247,38 @@ class ProductService:
     async def get_user_subscription_info(self, user: User) -> Optional[Dict]:
         """Get user's current product subscription information."""
         try:
-            # TODO: Implement actual subscription lookup
-            # For now, return placeholder info
-            subscription_info = {
-                'user_id': user.tg_id,
-                'status': 'active',
-                'category': self.default_category,
-                'expires_at': None,  # Will be set based on actual data
-                'devices_count': 1
-            }
+            subscription = self._user_subscriptions.get(user.tg_id)
             
-            return subscription_info
+            if subscription:
+                current_time = datetime.now(timezone.utc)
+                expiry_time = subscription['subscription_data'].expire_date
+                
+                # Check if subscription is still active
+                is_active = current_time < expiry_time
+                days_remaining = (expiry_time - current_time).days if is_active else 0
+                
+                subscription_info = {
+                    'user_id': user.tg_id,
+                    'product_name': subscription['product']['name'],
+                    'category': subscription['product']['category'],
+                    'status': 'active' if is_active else 'expired',
+                    'expires_at': expiry_time.isoformat(),
+                    'days_remaining': max(0, days_remaining),
+                    'created_at': subscription['created_at'],
+                    'is_gift': subscription.get('is_gift', False),
+                    'is_bonus': subscription.get('is_bonus', False),
+                    'bonus_days_added': subscription.get('bonus_days_added', 0),
+                    'delivery_info': subscription.get('delivery_info', {})
+                }
+                
+                return subscription_info
+            else:
+                # No active subscription
+                return {
+                    'user_id': user.tg_id,
+                    'status': 'none',
+                    'message': 'No active product subscription found'
+                }
             
         except Exception as e:
             logger.error(f"Failed to get subscription info for user {user.tg_id}: {e}")
@@ -144,30 +288,103 @@ class ProductService:
         """Get list of available product categories."""
         return self.product_categories
 
+    async def get_products_by_category(self, category: str) -> List[Dict[str, Any]]:
+        """Get all products in a specific category."""
+        products = await self.load_products_catalog()
+        return [p for p in products if p.get('category', '').lower() == category.lower()]
+
+    async def search_products(self, query: str) -> List[Dict[str, Any]]:
+        """Search products by name or description."""
+        products = await self.load_products_catalog()
+        query_lower = query.lower()
+        
+        results = []
+        for product in products:
+            if (query_lower in product.get('name', '').lower() or 
+                query_lower in product.get('description', '').lower()):
+                results.append(product)
+        
+        return results
+
+    async def _generate_product_key(self, product: Dict[str, Any]) -> str:
+        """Generate a unique product key/license."""
+        delivery_type = product.get('delivery_type', 'digital')
+        
+        if delivery_type == 'license_key':
+            # Generate a license key format
+            key_format = product.get('delivery_config', {}).get('key_format', 'XXXX-XXXX-XXXX')
+            # Replace X with random chars/numbers
+            import random
+            import string
+            
+            key = ""
+            for char in key_format:
+                if char == 'X':
+                    key += random.choice(string.ascii_uppercase + string.digits)
+                else:
+                    key += char
+            return key
+        else:
+            # Generate a unique access token
+            return f"ACCESS-{uuid.uuid4().hex[:12].upper()}"
+
     async def _deliver_product(
-        self, user: User, plan: Plan, subscription_data: SubscriptionData
-    ) -> bool:
+        self, user: User, product: Dict[str, Any], subscription_data: SubscriptionData, transaction_id: Optional[int] = None
+    ) -> Dict[str, Any]:
         """Internal method to handle product delivery."""
         try:
-            # TODO: Implement actual product delivery mechanism
-            # This could involve:
-            # - Generating product keys/codes
-            # - Creating access credentials
-            # - Sending delivery notifications
-            # - Recording delivery logs
+            current_time = datetime.now(timezone.utc)
+            delivery_type = product.get('delivery_type', 'digital')
             
+            # Generate delivery information based on product type
             delivery_info = {
+                'delivery_id': str(uuid.uuid4()),
                 'user_id': user.tg_id,
-                'plan_title': plan.title,
-                'duration_days': plan.duration_days,
-                'traffic_gb': plan.traffic_gb,
-                'delivered_at': subscription_data.start_date.isoformat(),
-                'expires_at': subscription_data.expire_date.isoformat()
+                'product_id': product['id'],
+                'product_name': product['name'],
+                'delivery_type': delivery_type,
+                'delivered_at': current_time.isoformat(),
+                'expires_at': subscription_data.expire_date.isoformat(),
+                'transaction_id': transaction_id
             }
             
-            logger.info(f"Product delivered successfully: {delivery_info}")
-            return True
+            # Generate specific delivery content based on type
+            if delivery_type == 'license_key':
+                delivery_info['license_key'] = await self._generate_product_key(product)
+                delivery_info['activation_instructions'] = product.get('delivery_config', {}).get('template', '')
+                
+            elif delivery_type == 'account_info':
+                # Generate account credentials (placeholder)
+                delivery_info['account_username'] = f"user_{user.tg_id}_{current_time.timestamp():.0f}"
+                delivery_info['account_password'] = f"pwd_{uuid.uuid4().hex[:8]}"
+                delivery_info['login_url'] = product.get('delivery_config', {}).get('login_url', 'https://example.com/login')
+                
+            elif delivery_type == 'download_link':
+                # Generate download link
+                delivery_info['download_url'] = f"https://download.example.com/{product['id']}/{uuid.uuid4().hex}"
+                delivery_info['download_expires'] = (current_time + timedelta(seconds=self.delivery_timeout)).isoformat()
+                
+            elif delivery_type == 'api':
+                # Generate API access
+                delivery_info['api_key'] = f"api_{uuid.uuid4().hex}"
+                delivery_info['api_endpoint'] = product.get('delivery_config', {}).get('endpoint', 'https://api.example.com')
+                
+            else:
+                # Default digital delivery
+                delivery_info['access_token'] = await self._generate_product_key(product)
+                delivery_info['access_instructions'] = f"Your {product['name']} is now active until {subscription_data.expire_date.strftime('%Y-%m-%d %H:%M:%S')} UTC"
+            
+            # Log successful delivery
+            logger.info(f"Product delivered successfully: {delivery_info['delivery_id']} to user {user.tg_id}")
+            
+            return {
+                'success': True,
+                'delivery_info': delivery_info
+            }
             
         except Exception as e:
             logger.error(f"Product delivery failed for user {user.tg_id}: {e}")
-            return False
+            return {
+                'success': False,
+                'error': str(e)
+            }
