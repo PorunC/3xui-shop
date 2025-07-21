@@ -40,7 +40,7 @@ DEFAULT_SHOP_PAYMENT_CRYPTOMUS_ENABLED = False
 DEFAULT_DB_NAME = "bot_database"
 
 DEFAULT_REDIS_DB_NAME = "0"
-DEFAULT_REDIS_HOST = "3xui-shop-redis"
+DEFAULT_REDIS_HOST = "digitalstore-redis"
 DEFAULT_REDIS_PORT = 6379
 
 # Product configuration defaults
