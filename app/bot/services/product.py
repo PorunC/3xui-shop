@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 from app.config import Config
 from app.db.models import User, Transaction
 from app.bot.models.plan import Plan
-from app.bot.models.subscription_data import SubscriptionData
+from app.bot.models.product_data import ProductSubscriptionData, ProductPlan
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class ProductService:
 
     async def create_subscription(
         self, user_id: int, plan: Plan, transaction_id: int
-    ) -> SubscriptionData:
+    ) -> ProductSubscriptionData:
         """Create a subscription for digital product access."""
         async with self.session_factory() as session:
             user = await User.get(session, user_id)
@@ -90,11 +90,13 @@ class ProductService:
             
             current_time = datetime.now(timezone.utc)
             
-            subscription_data = SubscriptionData(
+            subscription_data = ProductSubscriptionData(
                 start_date=current_time,
                 expire_date=current_time + timedelta(days=plan.duration_days),
                 traffic_limit=plan.traffic_gb,
-                is_trial=False
+                is_trial=False,
+                product_id=product['id'],
+                product_name=product['name']
             )
 
             # Deliver the product
@@ -146,11 +148,13 @@ class ProductService:
             expiry = current_time + timedelta(days=duration)
             
             # Create subscription data for the gift
-            subscription_data = SubscriptionData(
+            subscription_data = ProductSubscriptionData(
                 start_date=current_time,
                 expire_date=expiry,
                 traffic_limit=0,  # No traffic limit for gifts
-                is_trial=True
+                is_trial=True,
+                product_id=gift_product['id'],
+                product_name=gift_product['name']
             )
             
             # Deliver the gift product
@@ -217,11 +221,13 @@ class ProductService:
                 }
                 
                 bonus_expiry = current_time + timedelta(days=duration)
-                subscription_data = SubscriptionData(
+                subscription_data = ProductSubscriptionData(
                     start_date=current_time,
                     expire_date=bonus_expiry,
                     traffic_limit=0,
-                    is_trial=True
+                    is_trial=True,
+                    product_id=bonus_product['id'],
+                    product_name=bonus_product['name']
                 )
                 
                 delivery_result = await self._deliver_product(user, bonus_product, subscription_data, None)
@@ -329,7 +335,7 @@ class ProductService:
             return f"ACCESS-{uuid.uuid4().hex[:12].upper()}"
 
     async def _deliver_product(
-        self, user: User, product: Dict[str, Any], subscription_data: SubscriptionData, transaction_id: Optional[int] = None
+        self, user: User, product: Dict[str, Any], subscription_data: ProductSubscriptionData, transaction_id: Optional[int] = None
     ) -> Dict[str, Any]:
         """Internal method to handle product delivery."""
         try:

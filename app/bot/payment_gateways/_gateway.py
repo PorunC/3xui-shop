@@ -118,27 +118,33 @@ class PaymentGateway(ABC):
                     data=data,
                 )
             elif data.is_change:
-                await self.services.vpn.change_subscription(
-                    user=user,
-                    devices=data.devices,
-                    duration=data.duration,
-                )
-                logger.info(f"Subscription changed for user {user.tg_id}")
+                # TODO: Implement change subscription logic for products
+                logger.info(f"Subscription change requested for user {user.tg_id} - Not implemented for product system")
                 await self.services.notification.notify_change_success(
                     user_id=user.tg_id,
                     data=data,
                 )
             else:
-                await self.services.vpn.create_subscription(
-                    user=user,
-                    devices=data.devices,
+                # Create subscription using new product system
+                plan = await self.services.plan.get_plan_by_duration_and_devices(
                     duration=data.duration,
+                    devices=data.devices
                 )
+                
+                subscription_data = await self.services.subscription.create_subscription(
+                    user_id=user.id,
+                    plan=plan,
+                    transaction_id=transaction.id
+                )
+                
                 logger.info(f"Subscription created for user {user.tg_id}")
-                key = await self.services.vpn.get_key(user)
+                
+                # Get product delivery key/info for notification
+                product_key = getattr(subscription_data, 'delivery_info', {}).get('key', 'N/A')
+                
                 await self.services.notification.notify_purchase_success(
                     user_id=user.tg_id,
-                    key=key,
+                    key=product_key,
                 )
 
     async def _on_payment_canceled(self, payment_id: str) -> None:

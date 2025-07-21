@@ -1,13 +1,80 @@
 <div align="center" markdown>
 
 <p align="center">
-    <a href="https://github.com/snoups/3xui-shop/blob/main/README.md"><u><b>ENGLISH</b></u></a> •
-    <a href="https://github.com/snoups/3xui-shop/blob/main/README.ru_RU.md"><u><b>РУССКИЙ</b></u></a>
+    <a href="#english"><u><b>ENGLISH</b></u></a> •
+    <a href="#中文"><u><b>中文</b></u></a> •
+    <a href="https://github.com/snoups/3xui-shop/blob/main/doc/README.ru_RU.md"><u><b>РУССКИЙ</b></u></a>
 </p>
 
-![3xui-shop](https://github.com/user-attachments/assets/282d10db-a355-4c65-a2cf-eb0e8ec8eed1)
+![3xui-shop](http## 🐛 Support & Issues
 
-**This project is a Telegram bot for selling VPN subscriptions. It works with 3X-UI.**
+If you find a bug or have a feature request, please open an issue on the GitHub repository.
+
+## 💸 Support the Project
+
+You can support development via:
+- **Bitcoin:** `bc1ql53lcaukdv3thxcheh3cmgucwlwkr929gar0cy`
+- **Ethereum:** `0xe604a10258d26c085ada79cdea9a84a5b0894b91`
+- **USDT (TRC20):** `TUqDQ4mdtVJZC76789kPYBMzaLFQBDdKhE`
+- **TON:** `UQDogBlLFgrxkVWvDJn6YniCwrJDro7hbk5AqDMoSzmBQ-KQ`user-attachments/assets/282d10db-a355-4c65-a2cf-eb0e8ec8eed1)
+
+**This project is a Telegram bot for selling digital products and electronic goods.**
+
+<a id="english"></a>
+
+## 📝 English Documentation
+
+For complete installation guide and documentation in English, please visit:
+**[📚 English Documentation](doc/README_EN.md)**
+
+<a id="中文"></a>
+
+## 📝 中文文档  
+
+完整的安装指南和中文文档，请访问：
+**[📚 中文文档](doc/README.zh_CN.md)**
+
+---
+
+## 🚀 Quick Start
+
+This is a digital products sales bot that supports:
+- 🛍️ **Digital Product Sales** - Software licenses, game keys, subscriptions
+- 💳 **Multiple Payment Methods** - Cryptomus, Telegram Stars  
+- 🎁 **Trial System** - Free trials for new users
+- 👥 **Referral Program** - Two-level referral rewards
+- 📦 **Automated Delivery** - Instant product delivery
+
+### Installation
+```bash
+# Clone and install
+bash <(curl -Ls https://raw.githubusercontent.com/snoups/3xui-shop/main/scripts/install.sh) -q
+cd 3xui-shop
+
+# Configure
+cp plans.example.json plans.json
+cp .env.example .env
+# Edit .env and plans.json with your settings
+
+# Run
+docker compose build && docker compose up -d
+```
+
+### Project Status: ✅ Production Ready
+
+- ✅ **Phase 1 Complete** - VPN system removed, core architecture migrated
+- ✅ **Phase 2 Complete** - Enhanced ProductService, real product catalog, model fixes
+- 🚀 **Ready for Production** - Full digital product sales capability
+
+## 📚 Documentation Index
+
+| Document | Description | Language |
+|----------|-------------|----------|
+| [English Docs](doc/README_EN.md) | Complete installation and configuration guide | 🇺🇸 EN |
+| [中文文档](doc/README.zh_CN.md) | 完整的安装配置指南 | 🇨🇳 中文 |
+| [Russian Docs](doc/README.ru_RU.md) | Полное руководство по установке | 🇷🇺 RU |
+| [Migration Guide](doc/implementation_guide.md) | VPN to e-commerce migration guide | 🇨🇳 中文 |
+| [Phase Reports](doc/) | Detailed phase completion reports | 🇺🇸 EN |
 
 <p align="center">
     <a href="#overview">Overview</a> •
@@ -31,21 +98,27 @@
 
 ## 📝 Overview
 
-**3X-UI-SHOP** is a comprehensive solution designed to automate the sale of VPN subscriptions through Telegram.
-The bot uses the **3X-UI** panel API for client management and supports multiple payment methods, including
-**Cryptomus** and **Telegram Stars**.
+**3X-UI-SHOP** is a comprehensive solution designed to automate the sale of digital products through Telegram.
+The bot supports multiple payment methods, including **Cryptomus** and **Telegram Stars**, and can deliver
+various types of digital goods including software licenses, game keys, subscriptions, and digital content.
 
-The bot enables efficient subscription sales with advanced features:
+The bot enables efficient product sales with advanced features:
 
-- **Server Manager**
-    - Add, remove, disable, and check servers in the pool
-    - Automatically distribute new clients across servers
-    - Manage servers without restarting or reconfiguring the bot
-    - ~~Replace a server with another one~~
+- **Product Management**
+    - Browse digital products by category
+    - Advanced product catalog with 8+ products
+    - Automated delivery system for digital goods
+    - Support for multiple product types (licenses, accounts, downloads, APIs)
+    - Dynamic key generation and secure delivery
+- **Flexible Delivery System**
+    - License key delivery (software, games)
+    - Account information delivery (streaming services)
+    - Download link delivery (digital files, eBooks)
+    - API access delivery (developer tools)
 - **Promocode System**
     - Create, edit, and delete promocodes
-    - Promocodes for adding extra subscription time
-    - ~~Promocodes with discounts~~
+    - Promocodes for product discounts
+    - Time-limited promotional offers
 - **Notifications**
     - Send messages to a specific user or all users
     - Edit the last sent notification
@@ -54,17 +127,17 @@ The bot enables efficient subscription sales with advanced features:
     - System notifications for the developer and administrators
 - **Two-Level Referral Program** (by [@Heimlet](https://github.com/Heimlet))
     - View referral statistics
-    - Reward users for inviting new members
+    - Reward users for inviting new members with products or bonuses
     - Support for two-tier referral rewards
 - **Trial Period** (by [@Heimlet](https://github.com/Heimlet))
-    - Provide free trial subscription
-    - Extend trial period for referred users
-    - Configure and disable the trial period
+    - Provide free trial products
+    - Extended trial benefits for referred users
+    - Configure and customize trial offerings
 - **Flexible Payment System**
     - Change the default currency
     - Easily extendable architecture for adding new payment gateways
-    - ~~Add, edit, and delete subscription plans at any time~~
-    - ~~Change the display order of payment options~~
+    - Support for multiple product pricing models
+    - Real-time order processing and delivery
 - **~~User Editor~~**
     - ~~View user information~~
     - ~~View referral statistics~~
@@ -77,25 +150,29 @@ The bot enables efficient subscription sales with advanced features:
 
 ### ⚙️ Admin Panel
 The bot includes a user-friendly admin panel with tools for efficient management.
-Administrators do not have access to server management.
+Administrators can manage products, orders, and user accounts.
 
-- **`Server Manager`**: Add, remove, disable, and check servers in the pool
-- **`Statistics`**: View usage analytics and performance data
-- **`User Editor`**: Manage user accounts and subscriptions
+- **`Product Manager`**: Add, edit, and manage digital products
+- **`Order Management`**: Track and process customer orders
+- **`Statistics`**: View sales analytics and performance data
+- **`User Editor`**: Manage user accounts and purchase history
 - **`Promocode Editor`**: Create, edit, and delete promocodes
 - **`Notification Sender`**: Send custom notifications to users
 - **`Database Backup`**: Create and send database backups
 - **`Maintenance Mode`**: Disable user access during updates or fixes
 
 
-### 🚧 Current Tasks
+### 🚧 Current Status
 - [x] Trial period
 - [x] Referral system
-- [ ] Statistics
-- [ ] User editor
-- [ ] Plans editor
-- [ ] Flexible server pool
-- [ ] Custom promocodes
+- [x] Product catalog management
+- [x] Multi-type delivery system
+- [x] Payment integration
+- [ ] Advanced statistics
+- [ ] Enhanced user editor
+- [ ] Product review system
+- [ ] Inventory management
+- [ ] Custom product categories
 
 <a id="installation-guide"></a>
 
@@ -113,13 +190,13 @@ Before starting the installation, make sure you have the installed [**Docker**](
    cd 3xui-shop
    ```
 
-2. **Set up environment variables and plans:**
+2. **Set up environment variables and product catalog:**
 - Copy `plans.example.json` to `plans.json` and `.env.example` to `.env`:
     ```bash
     cp plans.example.json plans.json
     cp .env.example .env
     ```
-    > Update `plans.json` file with your subscription plans. [(Subscription Plans Configuration)](#subscription-plans-configuration) 
+    > Update `plans.json` file with your product catalog. [(Product Catalog Configuration)](#product-catalog-configuration) 
 
     > Update `.env` file with your configuration. [(Environment Variables Configuration)](#environment-variables-configuration)
 
@@ -148,22 +225,20 @@ Before starting the installation, make sure you have the installed [**Docker**](
 | | | |
 | SHOP_EMAIL | ⭕ | support@3xui-shop.com | Email for receipts |
 | SHOP_CURRENCY | ⭕ | RUB | Currency for buttons (e.g., RUB, USD, XTR) |
-| SHOP_TRIAL_ENABLED | ⭕ | True | Enable trial subscription for new users |
-| SHOP_TRIAL_PERIOD | ⭕ | 3 | Duration of the trial subscription in days |
+| SHOP_TRIAL_ENABLED | ⭕ | True | Enable trial products for new users |
+| SHOP_TRIAL_PERIOD | ⭕ | 3 | Duration of the trial access in days |
 | SHOP_REFERRED_TRIAL_ENABLED | ⭕ | False | Enable extended trial period for referred users |
 | SHOP_REFERRED_TRIAL_PERIOD | ⭕ | 7 | Duration of the extended trial for referred users (in days) |
 | SHOP_REFERRER_REWARD_ENABLED | ⭕ | True | Enable the two-level referral reward system |
 | SHOP_REFERRER_LEVEL_ONE_PERIOD | ⭕ | 10 | Reward in days for the first-level referrer (inviter) |
 | SHOP_REFERRER_LEVEL_TWO_PERIOD | ⭕ | 3 | Reward in days for the second-level referrer (inviter of the inviter). |
-| SHOP_BONUS_DEVICES_COUNT | ⭕ | 1 | Default Device Limit for Promocode, Trial, and Referral Users (Based on Plan Settings) |
+| SHOP_BONUS_DEVICES_COUNT | ⭕ | 1 | Default bonus count for promocode and referral rewards |
 | SHOP_PAYMENT_STARS_ENABLED | ⭕ | True | Enable Telegram stars payment |
 | SHOP_PAYMENT_CRYPTOMUS_ENABLED | ⭕ | False | Enable Cryptomus payment |
 | | | |
-| XUI_USERNAME | 🔴 | - | Username for authentication in the 3X-UI panel |
-| XUI_PASSWORD | 🔴 | - | Password for authentication in the 3X-UI panel |
-| XUI_TOKEN | ⭕ | - | Token for authentication (if configured in the panel) |
-| XUI_SUBSCRIPTION_PORT | ⭕ | 2096 | Port for subscription |
-| XUI_SUBSCRIPTION_PATH | ⭕ | /user/ | Path for subscription |
+| PRODUCT_CATALOG_FILE | ⭕ | products.json | Path to product catalog file |
+| PRODUCT_DEFAULT_CATEGORY | ⭕ | digital | Default product category |
+| PRODUCT_DELIVERY_TIMEOUT | ⭕ | 3600 | Product delivery timeout in seconds |
 | | | |
 | CRYPTOMUS_API_KEY | ⭕ | - | API key for Cryptomus payment |
 | CRYPTOMUS_MERCHANT_ID | ⭕ | - | Merchant ID for Cryptomus payment |
@@ -173,41 +248,52 @@ Before starting the installation, make sure you have the installed [**Docker**](
 | LOG_ARCHIVE_FORMAT | ⭕ | zip | Log archive format (e.g., zip, gz) |
 
 
-### Subscription Plans Configuration
+### Product Catalog Configuration
 
 ```json
 {
-    "durations": [30, 60, 180, 365],  // Available subscription durations in days
+    "categories": [
+        "software",     // Software licenses and applications
+        "gaming",       // Game keys and gaming accounts  
+        "subscription", // Streaming services and subscriptions
+        "digital",      // Digital content and downloads
+        "education"     // Educational courses and materials
+    ],
 
-    "plans": 
-    [
+    "products": [
         {
-            "devices": 1,  // Number of devices supported by the plan
-            "prices": {
-                "RUB": {  // Prices for Russian rubles (RUB)
-                    "30": 70,   // Price for 30 days
-                    "60": 120,  // Price for 60 days
-                    "180": 300, // Price for 180 days
-                    "365": 600  // Price for 365 days
-                },
-                "USD": {  // Prices for US dollars (USD)
-                    "30": 0.7,  // Price for 30 days
-                    "60": 1.2,  // Price for 60 days
-                    "180": 3,   // Price for 180 days
-                    "365": 6    // Price for 365 days
-                },
-                "XTR": {  // Prices for Telegram stars (XTR)
-                    "30": 60,   // Price for 30 days
-                    "60": 100,  // Price for 60 days
-                    "180": 250, // Price for 180 days
-                    "365": 500  // Price for 365 days
-                }
-            }
+            "id": "microsoft_office_365",
+            "name": "Microsoft Office 365 Personal",
+            "description": "Complete Microsoft Office suite with 1TB OneDrive storage",
+            "category": "software",
+            "price": {
+                "amount": 999,
+                "currency": "RUB"
+            },
+            "duration_days": 365,
+            "delivery_type": "license_key",
+            "delivery_template": "🔑 Your Microsoft Office 365 license: {license_key}",
+            "key_format": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+            "stock": -1,  // -1 for unlimited stock
+            "is_active": true
         },
         {
-            // Next plan
+            "id": "steam_random_key",
+            "name": "Steam Random Game Key",
+            "description": "Random Steam game key - Premium games guaranteed",
+            "category": "gaming", 
+            "price": {
+                "amount": 299,
+                "currency": "RUB"
+            },
+            "duration_days": 0,  // Permanent
+            "delivery_type": "license_key",
+            "delivery_template": "🎮 Your Steam key: {license_key}",
+            "key_format": "XXXXX-XXXXX-XXXXX",
+            "stock": 100,
+            "is_active": true
         }
-        ]
+    ]
 }
 ```
 
